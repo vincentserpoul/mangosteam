@@ -8,6 +8,14 @@ import (
 	"github.com/vincentserpoul/mangosteam"
 )
 
+// ItemID represents the unique identifier for an item
+type ItemID uint64
+
+// String will turn a ItemID into a string
+func (itemID ItemID) String() string {
+	return strconv.FormatUint(uint64(itemID), 10)
+}
+
 // ClassID and InstanceID represent the unique identifier for an item type
 type ClassID uint64
 
@@ -33,7 +41,7 @@ type Inventory struct {
 
 // Item represents an item in the inventory
 type Item struct {
-	ID         uint64     `json:",string"`
+	ID         ItemID     `json:",string"`
 	ClassID    ClassID    `json:",string"`
 	InstanceID InstanceID `json:",string"`
 	Amount     uint64     `json:",string"`
