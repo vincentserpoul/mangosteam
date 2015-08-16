@@ -1,0 +1,124 @@
+{
+  "success": true,
+  "rgInventory": {
+    "2957745169": {
+      "id": "2957745169",
+      "classid": "310776825",
+      "instanceid": "0",
+      "amount": "1",
+      "pos": 1
+    }
+  },
+  "rgCurrency": [],
+  "rgDescriptions": {
+    "310776825_0": {
+      "appid": "730",
+      "classid": "310776825",
+      "instanceid": "0",
+      "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpos7asPwJfwPz3YTBB09GzkImemrmnMuvQxTtXu5Eh2r6SpdTx3lbjrxZla2nwddWSc1Q3Y1-BrgDrwO_nm9bi60mswaUQ",
+      "icon_url_large": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpos7asPwJfwPz3YTBB09GzkImemsj4MqnWkyUC6ZVw2bnHptil2APn-0s4ZTv0cNOcegY9MAvX-wO3w-m-0cfpvZzB1zI97dnKOYtA",
+      "icon_drag_url": "",
+      "name": "Dual Berettas | Fournisseur",
+      "market_hash_name": "Dual Berettas | Contractor (Field-Tested)",
+      "market_name": "Dual Berettas | Fournisseur (Testée sur le terrain)",
+      "name_color": "D2D2D2",
+      "background_color": "",
+      "type": "Pistolet (Qualité artisanale)",
+      "tradable": 1,
+      "marketable": 1,
+      "commodity": 0,
+      "market_tradable_restriction": "7",
+      "descriptions": [
+        {
+          "type": "html",
+          "value": "Apparence : Testée sur le terrain"
+        },
+        {
+          "type": "html",
+          "value": " "
+        },
+        {
+          "type": "html",
+          "value": "Tirer avec deux Beretta à grand chargeur diminuera la précision et augmentera le temps de rechargement. Mais bon vous aurez quand même la chance de tirer avec deux Beretta à grand chargeur. Des parties de cette arme ont été peintes avec des couleurs ocre, marine et vert foncé."
+        },
+        {
+          "type": "html",
+          "value": " "
+        },
+        {
+          "type": "html",
+          "value": "Collection Safehouse",
+          "color": "9da1a9",
+          "app_data": {
+            "def_index": "65535",
+            "is_itemset_name": 1
+          }
+        },
+        {
+          "type": "html",
+          "value": " ",
+          "app_data": {
+            "def_index": "65535"
+          }
+        },
+        {
+          "type": "html",
+          "value": " "
+        }
+      ],
+      "actions": [
+        {
+          "name": "Inspecter dans le jeu...",
+          "link": "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S%owner_steamid%A%assetid%D14279311373969181404"
+        }
+      ],
+      "market_actions": [
+        {
+          "name": "Inspecter dans le jeu...",
+          "link": "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D14279311373969181404"
+        }
+      ],
+      "tags": [
+        {
+          "internal_name": "CSGO_Type_Pistol",
+          "name": "Pistolet",
+          "category": "Type",
+          "category_name": "Type"
+        },
+        {
+          "internal_name": "weapon_elite",
+          "name": "Dual Berettas",
+          "category": "Weapon",
+          "category_name": "Arme"
+        },
+        {
+          "internal_name": "set_safehouse",
+          "name": "Collection Safehouse",
+          "category": "ItemSet",
+          "category_name": "Collection"
+        },
+        {
+          "internal_name": "normal",
+          "name": "Normal",
+          "category": "Quality",
+          "category_name": "Catégorie"
+        },
+        {
+          "internal_name": "Rarity_Common_Weapon",
+          "name": "Qualité artisanale",
+          "category": "Rarity",
+          "color": "b0c3d9",
+          "category_name": "Qualité"
+        },
+        {
+          "internal_name": "WearCategory2",
+          "name": "Testée sur le terrain",
+          "category": "Exterior",
+          "category_name": "Apparence"
+        }
+      ]
+    }
+  },
+  "more": false,
+  "more_start": false
+}
