@@ -1,6 +1,9 @@
 package auth
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestEncryptPasswordEmptyPassword(t *testing.T) {
 	testRSAKey := &RSAKey{
@@ -128,9 +131,30 @@ func TestExtractRSAKeyFromJSONBadJSON(t *testing.T) {
 }
 
 func TestGetRSAKey(t *testing.T) {
-	username := "steambot_test"
+	username := "mangosteam"
+	baseSteamURL := "http://127.0.0.1:9090/"
 
-	key, err := GetRSAKey(username)
+	key, err := GetRSAKey(baseSteamURL, username)
+	fmt.Println(err)
+	if err != nil {
+		t.Errorf("WARNING GetRSAkey from http://127.0.0.1:9090 is not working anymore: %v", err)
+		return
+	}
+	fmt.Printf("%v", key)
+
+	if key.PublicKeyExponent == "" ||
+		key.PublicKeyModulus == "" ||
+		key.SteamID == "" ||
+		key.Timestamp == "" {
+		t.Errorf("GetRSAkey from steam is not returning a complete key but %v instead", key)
+	}
+}
+
+func TestGetRSAKeySteam(t *testing.T) {
+	username := "mangosteam"
+	baseSteamURL := "https://steamcommunity.com/"
+
+	key, err := GetRSAKey(baseSteamURL, username)
 
 	if err != nil {
 		t.Errorf("WARNING GetRSAkey from steam is not working anymore or %s has been deactivated", username)

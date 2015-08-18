@@ -14,7 +14,7 @@ type ieconGetTradeOffersResponse struct {
 }
 
 // IEconGetTradeOffers retrieves a list of tradeoffers
-func IEconGetTradeOffers(apiKey string) (*CEconTradeOffers, error) {
+func IEconGetTradeOffers(baseSteamAPIURL string, apiKey string) (*CEconTradeOffers, error) {
 
 	tosResp := &ieconGetTradeOffersResponse{}
 
@@ -28,7 +28,7 @@ func IEconGetTradeOffers(apiKey string) (*CEconTradeOffers, error) {
 	querystring.Add("historical_only", "0")
 	querystring.Add("time_historical_cutoff", "1")
 
-	resp, err := http.Get(mangosteam.BaseSteamAPIURL + "IEconService/GetTradeOffers/v0001?" + querystring.Encode())
+	resp, err := http.Get(baseSteamAPIURL + "IEconService/GetTradeOffers/v0001?" + querystring.Encode())
 
 	if err != nil {
 		return nil, fmt.Errorf("tradeoffer IEconGetTradeOffers http.Get: error %v", err)
@@ -55,7 +55,7 @@ type ieconGetTradeOfferResponse struct {
 }
 
 // IEconGetTradeOffer retrieves details about a specific tradeoffer
-func IEconGetTradeOffer(apiKey string, steamID mangosteam.SteamID, tradeOfferID SteamTradeOfferID) (
+func IEconGetTradeOffer(baseSteamAPIURL string, apiKey string, steamID mangosteam.SteamID, tradeOfferID SteamTradeOfferID) (
 	*CEconTradeOffer, error,
 ) {
 
@@ -68,7 +68,7 @@ func IEconGetTradeOffer(apiKey string, steamID mangosteam.SteamID, tradeOfferID 
 	querystring.Add("tradeofferid", tradeOfferID.String())
 	querystring.Add("language", "en")
 
-	resp, err := http.Get(mangosteam.BaseSteamAPIURL + "IEconService/GetTradeOffer/v0001?" + querystring.Encode())
+	resp, err := http.Get(baseSteamAPIURL + "IEconService/GetTradeOffer/v0001?" + querystring.Encode())
 
 	if err != nil {
 		return nil, fmt.Errorf("tradeoffer IEconGetTradeOffer http.Get: error %v", err)
@@ -87,7 +87,7 @@ func IEconGetTradeOffer(apiKey string, steamID mangosteam.SteamID, tradeOfferID 
 }
 
 // IEconActionTradeOffer declines a TO created by someone else
-func IEconActionTradeOffer(action string, apiKey string, tradeOfferID SteamTradeOfferID) error {
+func IEconActionTradeOffer(baseSteamAPIURL string, action string, apiKey string, tradeOfferID SteamTradeOfferID) error {
 
 	if action != "Decline" && action != "Cancel" {
 		return fmt.Errorf("tradeoffer IEconActionTradeOffer doesn't support %v action", action)
@@ -97,7 +97,7 @@ func IEconActionTradeOffer(action string, apiKey string, tradeOfferID SteamTrade
 	querystring.Add("tradeofferid", tradeOfferID.String())
 
 	resp, err := http.Get(
-		mangosteam.BaseSteamAPIURL + "IEconService/" + action + "TradeOffer/v0001?" + querystring.Encode())
+		baseSteamAPIURL + "IEconService/" + action + "TradeOffer/v0001?" + querystring.Encode())
 
 	if resp.StatusCode != 200 || err != nil {
 		return fmt.Errorf("tradeoffer IEcon%sTradeOffer http.Get: %v error %v", action, resp.StatusCode, err)

@@ -12,9 +12,10 @@ func TestGetUserInventoryURL(t *testing.T) {
 
 	steamID := mangosteam.SteamID(76561198238395094)
 	appID := mangosteam.AppID(730)
+	baseSteamWebURL := "https://steam/"
 
-	inventoryURL := getUserInventoryURL(steamID, appID)
-	expectedInventoryURL := mangosteam.BaseSteamWebURL + "profiles/76561198238395094/inventory/json/730/2"
+	inventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
+	expectedInventoryURL := "https://steam/profiles/76561198238395094/inventory/json/730/2"
 
 	if inventoryURL != expectedInventoryURL {
 		t.Errorf("getUserInventoryURL(%d, %d) expected %s, got %s", steamID, appID,

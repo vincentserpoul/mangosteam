@@ -7,14 +7,13 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/vincentserpoul/mangosteam"
 )
 
 // GetAPIKey allows to get the API key directly from steam interface
-func (user *User) getAPIKey() (string, error) {
+func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 
-	client := user.NewWebSteamClient()
-	resp, err := client.Get(mangosteam.BaseSteamWebURL + "dev/apikey")
+	client := user.NewWebSteamClient(baseSteamWebURL)
+	resp, err := client.Get(baseSteamWebURL + "dev/apikey")
 	defer resp.Body.Close()
 
 	var APIKey string
@@ -42,22 +41,22 @@ func (user *User) getAPIKey() (string, error) {
 	}
 
 	if APIKey == "" {
-		err = user.registerAPIKey()
+		err = user.registerAPIKey(baseSteamWebURL)
 		if err != nil {
 			return "", fmt.Errorf("steam user GetAPIKey(): %v error %v", user.Username, err)
 		}
 
-		return user.getAPIKey()
+		return user.getAPIKey(baseSteamWebURL)
 	}
 
 	return APIKey, nil
 }
 
 // registerAPIKey allows to request for an API key
-func (user *User) registerAPIKey() error {
+func (user *User) registerAPIKey(baseSteamWebURL string) error {
 
-	client := user.NewWebSteamClient()
-	baseURL, _ := url.Parse(mangosteam.BaseSteamWebURL + "dev/registerkey")
+	client := user.NewWebSteamClient(baseSteamWebURL)
+	baseURL, _ := url.Parse(baseSteamWebURL + "dev/registerkey")
 
 	form := url.Values{}
 	form.Add("domain", "localhost")

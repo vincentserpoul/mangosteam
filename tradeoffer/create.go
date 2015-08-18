@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	newTradeOfferSendURL        string = mangosteam.BaseSteamWebURL + "tradeoffer/new/send"
-	newTradeOfferSendRefererURL string = mangosteam.BaseSteamWebURL + "tradeoffer/new/?partner="
+	newTradeOfferSendURL        string = "tradeoffer/new/send"
+	newTradeOfferSendRefererURL string = "tradeoffer/new/?partner="
 )
 
 // Result is the response body from the tradeoffer create request
@@ -25,15 +25,16 @@ type Result struct {
 
 // CreateSteamTradeOffer sends a new trade offer to the given Steam user.
 func CreateSteamTradeOffer(
+	baseSteamWebURL string,
 	client *http.Client,
 	sessionID string,
 	otherSteamID mangosteam.SteamID,
 	accessToken string,
-	myItems, theirItems *[]Asset,
+	myItems, theirItems []*Asset,
 	message string,
 ) (*http.Request, *http.Response, *Result, error) {
 
-	baseURL, _ := url.Parse(newTradeOfferSendURL)
+	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
 
@@ -55,7 +56,7 @@ func CreateSteamTradeOffer(
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	// Headers
-	referer := newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
+	referer := baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
 	req.Header.Add("Referer", referer)
 
 	dump, err := httputil.DumpRequest(req, true)
@@ -84,7 +85,7 @@ func CreateSteamTradeOffer(
 	return req, resp, result, nil
 }
 
-func getJSONTradeOffer(myItems, theirItems *[]Asset) ([]byte, error) {
+func getJSONTradeOffer(myItems, theirItems []*Asset) ([]byte, error) {
 
 	var tradeOfferJSON []byte
 	var err error
@@ -156,17 +157,18 @@ func getBodyTradeOffer(
 
 // CreateCurlSteamTradeOffer creates a curl tradeoffer, mostly for simple tests
 func CreateCurlSteamTradeOffer(
+	baseSteamWebURL string,
 	otherSteamID mangosteam.SteamID,
 	user *steamuser.User,
 	assetID AssetID,
 	accessToken string,
 ) (string, error) {
 
-	var userAsset []Asset
+	var userAsset []*Asset
 	asset := Asset{AssetID: assetID}
 	asset.Defaults(730)
 
-	tradeOfferJSON, err := getJSONTradeOffer(&userAsset, &[]Asset{asset})
+	tradeOfferJSON, err := getJSONTradeOffer(userAsset, []*Asset{&asset})
 	tradeOfferCreateParamsJSON, err := getTradeOfferCreateParams(accessToken)
 
 	bodyTradeOffer := getBodyTradeOffer(
@@ -180,10 +182,10 @@ func CreateCurlSteamTradeOffer(
 		return "", nil
 	}
 
-	curlString := "curl '" + newTradeOfferSendURL + "'" +
+	curlString := "curl '" + baseSteamWebURL + newTradeOfferSendURL + "'" +
 		" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8'" +
-		" -H 'Referer: " + newTradeOfferSendRefererURL + otherSteamID.GetAccountID() + "'" +
-		" -H 'Cookie: " +
+		" -H 'Referer: " + baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID() +
+		"'" + " -H 'Cookie: " +
 		"steamMachineAuth" + user.SteamID.String() + "=" + user.SteamMachineAuth + "; " +
 		"sessionid=1; " +
 		"steamLogin=" + user.SteamLogin + "; " +

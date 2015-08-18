@@ -21,10 +21,10 @@ type User struct {
 }
 
 // Login logs in the bot
-func (user *User) Login() error {
-	client := user.NewWebSteamClient()
+func (user *User) Login(baseSteamWebURL string) error {
+	client := user.NewWebSteamClient(baseSteamWebURL)
 
-	rsaKey, err := auth.GetRSAKey(user.Username)
+	rsaKey, err := auth.GetRSAKey(baseSteamWebURL, user.Username)
 	if err != nil {
 		return fmt.Errorf("user Login(): %v", err)
 	}
@@ -34,6 +34,7 @@ func (user *User) Login() error {
 	}
 
 	err = auth.DoLogin(
+		baseSteamWebURL,
 		client,
 		user.Username,
 		encryptedPassword,

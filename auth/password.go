@@ -14,7 +14,6 @@ import (
 	"strconv"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/vincentserpoul/mangosteam"
 )
 
 // RSAKey represent the key for encoding password
@@ -26,13 +25,13 @@ type RSAKey struct {
 }
 
 // GetRSAKey queries steam to get the key needed to encode the password
-func GetRSAKey(username string) (*RSAKey, error) {
+func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 
 	logrus.WithFields(logrus.Fields{
 		"username": username,
-	}).Debug("calling ", mangosteam.BaseSteamWebURL+"login/getrsakey")
+	}).Debug("calling ", baseSteamWebURL+"login/getrsakey")
 
-	resp, err := http.PostForm(mangosteam.BaseSteamWebURL+"login/getrsakey",
+	resp, err := http.PostForm(baseSteamWebURL+"login/getrsakey",
 		url.Values{"username": {username}})
 
 	if err != nil {
@@ -60,13 +59,12 @@ func extractRSAKeyFromJSON(JSONBytes []byte) (*RSAKey, error) {
 	if err := json.Unmarshal(JSONBytes, &key); err != nil {
 		return nil, err
 	}
-
 	if key.PublicKeyExponent == "" ||
 		key.PublicKeyModulus == "" ||
 		key.SteamID == "" ||
 		key.Timestamp == "" {
 		return nil, fmt.Errorf(
-			"websteam extractRSAKeyFromJSON: incomplete RSAKey unmarshalled")
+			"websteam extractRSAKeyFromJSON: incomplete RSAKey unmarshalled: %+v", key)
 	}
 
 	return &key, nil
@@ -76,12 +74,12 @@ func extractRSAKeyFromJSON(JSONBytes []byte) (*RSAKey, error) {
 func EncryptPassword(password string, rsaKey *RSAKey) (string, error) {
 
 	if password == "" {
-		return "", fmt.Errorf("websteam EncryptPassword(password: %v, rsaKey: %v) "+
-			"requires a non empty password as an argument", password, rsaKey)
+		return "", fmt.Errorf("websteam EncryptPassword(password, rsaKey) " +
+			"requires a non empty password as an argument")
 	}
 	if rsaKey == nil {
-		return "", fmt.Errorf("websteam EncryptPassword(password: %v, rsaKey: %v) "+
-			"requires a non empty rsaKey as an argument", password, rsaKey)
+		return "", fmt.Errorf("websteam EncryptPassword(password, rsaKey) " +
+			"requires a non empty rsaKey as an argument")
 	}
 
 	// convert the hex string to int

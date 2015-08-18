@@ -7,7 +7,6 @@ import (
 	"net/url"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/vincentserpoul/mangosteam"
 )
 
 // doLogInResponse is used to store the body of the steam doLogin response
@@ -18,6 +17,7 @@ type doLogInResponse struct {
 
 // DoLogin is used to log in the steam account after we got the encrypted password
 func DoLogin(
+	baseSteamWebURL string,
 	client *http.Client,
 	username string,
 	encryptedPassword string,
@@ -27,7 +27,7 @@ func DoLogin(
 	captchaKeyedIn string,
 ) error {
 
-	baseURL, _ := url.Parse(mangosteam.BaseSteamWebURL + "login/dologin")
+	baseURL, _ := url.Parse(baseSteamWebURL + "login/dologin")
 
 	// default value set to -1
 	if captchaGID == "" {
@@ -53,7 +53,7 @@ func DoLogin(
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
-	baseURLCookie, _ := url.Parse(mangosteam.BaseSteamWebURL)
+	baseURLCookie, _ := url.Parse(baseSteamWebURL)
 
 	logrus.WithFields(logrus.Fields{
 		"username": username,
