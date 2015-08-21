@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-
-	"github.com/Sirupsen/logrus"
 )
 
 // doLogInResponse is used to store the body of the steam doLogin response
@@ -27,7 +25,7 @@ func DoLogin(
 	captchaKeyedIn string,
 ) error {
 
-	baseURL, _ := url.Parse(baseSteamWebURL + "login/dologin")
+	baseURL, _ := url.Parse(baseSteamWebURL + "/login/dologin")
 
 	// default value set to -1
 	if captchaGID == "" {
@@ -53,19 +51,13 @@ func DoLogin(
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
-	baseURLCookie, _ := url.Parse(baseSteamWebURL)
-
-	logrus.WithFields(logrus.Fields{
-		"username": username,
-	}).Debug("doLogin: cookiesJar contains ", client.Jar.Cookies(baseURLCookie))
-
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("auth doLogin(): %v", err)
+		return fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("auth doLogin(): bad request %v for %s, ",
+		return fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
 			resp.Status, username)
 	}
 
@@ -74,16 +66,16 @@ func DoLogin(
 	err = decoder.Decode(loginBody)
 
 	if err != nil {
-		return fmt.Errorf("auth doLogin(): %v", err)
+		return fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
 	if loginBody.EmailauthNeeded {
-		return fmt.Errorf("auth doLogin(): steamAuth invalid for %s, "+
+		return fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
 			" code sent via email", username)
 	}
 
 	if !loginBody.Success {
-		return fmt.Errorf("auth doLogin(): unknown error for %s", username)
+		return fmt.Errorf("auth DoLogin(): unknown error for %s", username)
 	}
 
 	return nil

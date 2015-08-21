@@ -13,8 +13,8 @@ type InvChecker interface {
 	AreItemsDataSimilarUserInventory(items []*Item) bool
 }
 
-// New returns a new inventory
-func New(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.SteamID) (*Inventory, error) {
+// GetUserInventory returns the inventory of the user, if available
+func GetUserInventory(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.SteamID) (*Inventory, error) {
 	userInventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
 
 	resp, err := http.Get(userInventoryURL)
@@ -34,8 +34,9 @@ func New(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.Stea
 
 func getUserInventoryURL(baseSteamWebURL string, steamID mangosteam.SteamID, appID mangosteam.AppID) string {
 	contextID := mangosteam.ContextID(2)
-	userInventoryURL := baseSteamWebURL + "profiles/" +
-		steamID.String() + "/inventory/json/" + appID.String() + "/" + contextID.String()
+	userInventoryURL := baseSteamWebURL + "/profiles/" +
+		steamID.String() + "/inventory/json/" + appID.String() + "/" + contextID.String() +
+		"?l=english"
 
 	return userInventoryURL
 }

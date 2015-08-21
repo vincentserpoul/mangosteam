@@ -1,8 +1,9 @@
 package inventory
 
 import (
-	"encoding/json"
-	"os"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/vincentserpoul/mangosteam"
@@ -10,12 +11,12 @@ import (
 
 func TestGetUserInventoryURL(t *testing.T) {
 
-	steamID := mangosteam.SteamID(76561198238395094)
+	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
-	baseSteamWebURL := "https://steam/"
+	baseSteamWebURL := "https://steam"
 
 	inventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
-	expectedInventoryURL := "https://steam/profiles/76561198238395094/inventory/json/730/2"
+	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english"
 
 	if inventoryURL != expectedInventoryURL {
 		t.Errorf("getUserInventoryURL(%d, %d) expected %s, got %s", steamID, appID,
@@ -24,23 +25,43 @@ func TestGetUserInventoryURL(t *testing.T) {
 
 }
 
-func getMockJSONInventory(t *testing.T) *Inventory {
+func TestGetUserInventoryMock(t *testing.T) {
+	steamID := mangosteam.SteamID(1234567890)
+	appID := mangosteam.AppID(730)
 
-	file, err := os.Open("mocks/userInventory.json")
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, GetMockOKProfilesInventory())
+	}))
+	defer ts.Close()
+
+	userInventory, err := GetUserInventory(ts.URL, appID, steamID)
+
 	if err != nil {
-		t.Error("getMockJSONInventory() mocks/userInventory.json not found!")
+		t.Errorf("GetUserInventory(%s, %v, %v) error: %v", ts.URL, appID, steamID, err)
 	}
-
-	// dec := gob.NewDecoder(file)
-	dec := json.NewDecoder(file)
-	var userInventory Inventory
-
-	err = dec.Decode(&userInventory)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	return &userInventory
-
+	// expectedUserInventory := Inventory{
+	// 	Items: inventory.Items{
+	// 		"8742038": &Item{
+	// 			ID: 8742038,
+	// 			ClassID: 77838,
+	// 			InstanceID: 0,
+	// 			Amount:    1,
+	// 			Pos:  1 ,
+	// 		},
+	// 		"172795": &Item{
+	// 			ID: 8742038,
+	// 			ClassID: 77838,
+	// 			InstanceID: 0,
+	// 			Amount:    1,
+	// 			Pos:  1 ,
+	// 		}
+	// 	},
+	// 	Descriptions: inventory.Descriptions{
+	// 		"2107773_0": (*inventory.Description)(0xc208032ea0),
+	// 		"77838_0": (*inventory.Description)(0xc208032b60)
+	// 	},
+	// 	AppInfo: (*inventory.AppInfo)(nil)}
+	fmt.Printf("%#v", userInventory)
 }

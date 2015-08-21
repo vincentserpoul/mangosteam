@@ -28,7 +28,7 @@ func IEconGetTradeOffers(baseSteamAPIURL string, apiKey string) (*CEconTradeOffe
 	querystring.Add("historical_only", "0")
 	querystring.Add("time_historical_cutoff", "1")
 
-	resp, err := http.Get(baseSteamAPIURL + "IEconService/GetTradeOffers/v0001?" + querystring.Encode())
+	resp, err := http.Get(baseSteamAPIURL + "/IEconService/GetTradeOffers/v0001?" + querystring.Encode())
 
 	if err != nil {
 		return nil, fmt.Errorf("tradeoffer IEconGetTradeOffers http.Get: error %v", err)
@@ -68,7 +68,7 @@ func IEconGetTradeOffer(baseSteamAPIURL string, apiKey string, steamID mangostea
 	querystring.Add("tradeofferid", tradeOfferID.String())
 	querystring.Add("language", "en")
 
-	resp, err := http.Get(baseSteamAPIURL + "IEconService/GetTradeOffer/v0001?" + querystring.Encode())
+	resp, err := http.Get(baseSteamAPIURL + "/IEconService/GetTradeOffer/v0001?" + querystring.Encode())
 
 	if err != nil {
 		return nil, fmt.Errorf("tradeoffer IEconGetTradeOffer http.Get: error %v", err)
@@ -97,7 +97,7 @@ func IEconActionTradeOffer(baseSteamAPIURL string, action string, apiKey string,
 	querystring.Add("tradeofferid", tradeOfferID.String())
 
 	resp, err := http.Get(
-		baseSteamAPIURL + "IEconService/" + action + "TradeOffer/v0001?" + querystring.Encode())
+		baseSteamAPIURL + "/IEconService/" + action + "TradeOffer/v0001?" + querystring.Encode())
 
 	if resp.StatusCode != 200 || err != nil {
 		return fmt.Errorf("tradeoffer IEcon%sTradeOffer http.Get: %v error %v", action, resp.StatusCode, err)

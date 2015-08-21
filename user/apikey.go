@@ -13,7 +13,7 @@ import (
 func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 
 	client := user.NewWebSteamClient(baseSteamWebURL)
-	resp, err := client.Get(baseSteamWebURL + "dev/apikey")
+	resp, err := client.Get(baseSteamWebURL + "/dev/apikey")
 	defer resp.Body.Close()
 
 	var APIKey string
@@ -56,7 +56,7 @@ func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 func (user *User) registerAPIKey(baseSteamWebURL string) error {
 
 	client := user.NewWebSteamClient(baseSteamWebURL)
-	baseURL, _ := url.Parse(baseSteamWebURL + "dev/registerkey")
+	baseURL, _ := url.Parse(baseSteamWebURL + "/dev/registerkey")
 
 	form := url.Values{}
 	form.Add("domain", "localhost")

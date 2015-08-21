@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	newTradeOfferSendURL        string = "tradeoffer/new/send"
-	newTradeOfferSendRefererURL string = "tradeoffer/new/?partner="
+	newTradeOfferSendURL        string = "/tradeoffer/new/send"
+	newTradeOfferSendRefererURL string = "/tradeoffer/new/?partner="
 )
 
 // Result is the response body from the tradeoffer create request
