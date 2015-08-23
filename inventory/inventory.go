@@ -15,7 +15,7 @@ type InvChecker interface {
 
 // GetUserWebInventory returns the inventory of the user, if available
 func GetUserWebInventory(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.SteamID) (*Inventory, error) {
-	userInventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
+	userInventoryURL := getUserWebInventoryURL(baseSteamWebURL, steamID, appID)
 
 	resp, err := http.Get(userInventoryURL)
 
@@ -32,7 +32,7 @@ func GetUserWebInventory(baseSteamWebURL string, appID mangosteam.AppID, steamID
 	return &inventory, nil
 }
 
-func getUserInventoryURL(baseSteamWebURL string, steamID mangosteam.SteamID, appID mangosteam.AppID) string {
+func getUserWebInventoryURL(baseSteamWebURL string, steamID mangosteam.SteamID, appID mangosteam.AppID) string {
 	contextID := mangosteam.ContextID(2)
 	userInventoryURL := baseSteamWebURL + "/profiles/" +
 		steamID.String() + "/inventory/json/" + appID.String() + "/" + contextID.String() +

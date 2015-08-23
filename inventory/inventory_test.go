@@ -9,13 +9,13 @@ import (
 	"github.com/vincentserpoul/mangosteam"
 )
 
-func TestGetUserInventoryURL(t *testing.T) {
+func TestGetUserWebInventoryURL(t *testing.T) {
 
 	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
 	baseSteamWebURL := "https://steam"
 
-	inventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
+	inventoryURL := getUserWebInventoryURL(baseSteamWebURL, steamID, appID)
 	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english"
 
 	if inventoryURL != expectedInventoryURL {
@@ -25,7 +25,7 @@ func TestGetUserInventoryURL(t *testing.T) {
 
 }
 
-func TestGetUserInventoryMock(t *testing.T) {
+func TestGetUserWebInventoryMock(t *testing.T) {
 	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
 
@@ -36,10 +36,10 @@ func TestGetUserInventoryMock(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	userInventory, err := GetUserInventory(ts.URL, appID, steamID)
+	userInventory, err := GetUserWebInventory(ts.URL, appID, steamID)
 
 	if err != nil {
-		t.Errorf("GetUserInventory(%s, %v, %v) error: %v", ts.URL, appID, steamID, err)
+		t.Errorf("GetUserWebInventory(%s, %v, %v) error: %v", ts.URL, appID, steamID, err)
 	}
 	// expectedUserInventory := Inventory{
 	// 	Items: inventory.Items{
