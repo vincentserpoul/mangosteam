@@ -13,8 +13,8 @@ type InvChecker interface {
 	AreItemsDataSimilarUserInventory(items []*Item) bool
 }
 
-// GetUserInventory returns the inventory of the user, if available
-func GetUserInventory(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.SteamID) (*Inventory, error) {
+// GetUserWebInventory returns the inventory of the user, if available
+func GetUserWebInventory(baseSteamWebURL string, appID mangosteam.AppID, steamID mangosteam.SteamID) (*Inventory, error) {
 	userInventoryURL := getUserInventoryURL(baseSteamWebURL, steamID, appID)
 
 	resp, err := http.Get(userInventoryURL)
