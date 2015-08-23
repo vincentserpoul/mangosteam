@@ -36,7 +36,7 @@ func TestDoLogin(t *testing.T) {
 	)
 
 	if err == nil {
-		t.Errorf("Dologin returns no error even when login is not successful")
+		t.Errorf("Dologin returns no error when login is not successful")
 	}
 
 	return
