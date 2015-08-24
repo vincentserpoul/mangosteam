@@ -1,27 +1,5 @@
 {
 	"ImportPath": "github.com/vincentserpoul/mangosteam",
 	"GoVersion": "go1.5",
-	"Packages": [
-		"./..."
-	],
-	"Deps": [
-		{
-			"ImportPath": "github.com/PuerkitoBio/goquery",
-			"Comment": "v0.3.2-79-gb444041",
-			"Rev": "b4440419d81240f8451a505b2f806c853bc2befc"
-		},
-		{
-			"ImportPath": "github.com/Sirupsen/logrus",
-			"Comment": "v0.7.3-15-g092eda2",
-			"Rev": "092eda23b5d2ccf95fe7dfc70354493eb273487a"
-		},
-		{
-			"ImportPath": "github.com/andybalholm/cascadia",
-			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
-		},
-		{
-			"ImportPath": "golang.org/x/net/html",
-			"Rev": "621fff363a1d9ad7fdd0bfa9d80a42881267deb4"
-		}
-	]
+	"Deps": []
 }
