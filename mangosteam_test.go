@@ -84,7 +84,7 @@ func TestErrorGetSteamIDFromString(t *testing.T) {
 	expectedSteamIDFromString := SteamID(12345678901236)
 	GotSteamIDFromString, err := GetSteamIDFromString("1234567890123A")
 
-	if err != nil {
+	if err == nil {
 		t.Errorf(
 			"Should be an error, Expected %v, got %v",
 			expectedSteamIDFromString, GotSteamIDFromString,
@@ -96,7 +96,7 @@ func TestErrorGetAppIDFromString(t *testing.T) {
 	expectedGetAppIDFromString := AppID(123456755)
 	GotGetAppIDFromString, err := GetAppIDFromString("12345679A")
 
-	if err != nil {
+	if err == nil {
 		t.Errorf(
 			"Should be an error, Expected %v, got %v",
 			expectedGetAppIDFromString, GotGetAppIDFromString,
