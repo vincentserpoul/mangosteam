@@ -14,7 +14,7 @@ type Asset struct {
 	AssetID   AssetID              `json:"assetid,string"`
 	AppID     mangosteam.AppID     `json:"appid"`
 	ContextID mangosteam.ContextID `json:"contextid,string"`
-	Amount    int                  `json:"amount"`
+	Amount    uint64               `json:"amount"`
 }
 
 // Defaults update assets with default values

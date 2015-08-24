@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"github.com/vincentserpoul/mangosteam"
@@ -19,7 +20,7 @@ func TestGetUserWebInventoryURL(t *testing.T) {
 	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english"
 
 	if inventoryURL != expectedInventoryURL {
-		t.Errorf("getUserInventoryURL(%d, %d) expected %s, got %s", steamID, appID,
+		t.Errorf("getUserWebInventoryURL(%d, %d) expected %s, got %s", steamID, appID,
 			expectedInventoryURL, inventoryURL)
 	}
 
@@ -41,27 +42,63 @@ func TestGetUserWebInventoryMock(t *testing.T) {
 	if err != nil {
 		t.Errorf("GetUserWebInventory(%s, %v, %v) error: %v", ts.URL, appID, steamID, err)
 	}
-	// expectedUserInventory := Inventory{
-	// 	Items: inventory.Items{
-	// 		"8742038": &Item{
-	// 			ID: 8742038,
-	// 			ClassID: 77838,
-	// 			InstanceID: 0,
-	// 			Amount:    1,
-	// 			Pos:  1 ,
-	// 		},
-	// 		"172795": &Item{
-	// 			ID: 8742038,
-	// 			ClassID: 77838,
-	// 			InstanceID: 0,
-	// 			Amount:    1,
-	// 			Pos:  1 ,
-	// 		}
-	// 	},
-	// 	Descriptions: inventory.Descriptions{
-	// 		"2107773_0": (*inventory.Description)(0xc208032ea0),
-	// 		"77838_0": (*inventory.Description)(0xc208032b60)
-	// 	},
-	// 	AppInfo: (*inventory.AppInfo)(nil)}
-	fmt.Printf("%#v", userInventory)
+
+	expectedUserInventory := &Inventory{
+		Items: Items{
+			"172795": &Item{
+				ID:         ItemID(172795),
+				ClassID:    ClassID(2107773),
+				InstanceID: InstanceID(0),
+				Amount:     uint64(1),
+				Pos:        uint64(2),
+			},
+			"8742038": &Item{
+				ID:         ItemID(8742038),
+				ClassID:    ClassID(77838),
+				InstanceID: InstanceID(0),
+				Amount:     uint64(1),
+				Pos:        uint64(1),
+			},
+		},
+		Descriptions: Descriptions{
+			"77838_0": &Description{
+				AppID:           mangosteam.AppID(730),
+				ClassID:         ClassID(77838),
+				InstanceID:      InstanceID(0),
+				IconURL:         "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXQ9Q1LO5kNoBhSQl-fEv2o1t3QXFR6a1wE4uOkKlFm0qvJd2gSvYS3x9nbwfXyZrqBxDkCvZYmjurEpomlilL6ux07YtuiRwA",
+				IconDragURL:     "",
+				Name:            "5 Year Veteran Coin",
+				MarketHashName:  "5 Year Veteran Coin",
+				MarketName:      "5 Year Veteran Coin",
+				NameColor:       "D2D2D2",
+				BackgroundColor: "",
+				Type:            "Extraordinary Collectible",
+				Tradable:        0,
+				Marketable:      0,
+				Commodity:       0,
+			},
+			"2107773_0": &Description{
+				AppID:           mangosteam.AppID(730),
+				ClassID:         ClassID(2107773),
+				InstanceID:      InstanceID(0),
+				IconURL:         "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgporrf0e1Y07ODHTjBN_8-JmYWPnuL5feuJwjlVscQhj7rH9tzw2wXmqkNlYG-hJNWSegc9Zl-E_QK9xbjr08Si_MOejgzGL-s",
+				IconDragURL:     "",
+				Name:            "XM1014 | Blue Spruce",
+				MarketHashName:  "XM1014 | Blue Spruce (Field-Tested)",
+				MarketName:      "XM1014 | Blue Spruce (Field-Tested)",
+				NameColor:       "D2D2D2",
+				BackgroundColor: "",
+				Type:            "Consumer Grade Shotgun",
+				Tradable:        1,
+				Marketable:      1,
+				Commodity:       0,
+			},
+		},
+	}
+
+	if !reflect.DeepEqual(expectedUserInventory, userInventory) {
+		t.Errorf("GetUserWebInventory(%s, %v, %v): got %#v, expected %#v",
+			ts.URL, appID, steamID, userInventory, expectedUserInventory)
+	}
+
 }

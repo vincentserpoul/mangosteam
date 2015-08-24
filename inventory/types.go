@@ -36,7 +36,6 @@ func (instanceID InstanceID) String() string {
 type Inventory struct {
 	Items        Items        `json:"rgInventory"`
 	Descriptions Descriptions `json:"rgDescriptions"`
-	AppInfo      *AppInfo     `json:"rgAppInfo"`
 }
 
 // Item represents an item in the inventory
@@ -45,7 +44,7 @@ type Item struct {
 	ClassID    ClassID    `json:",string"`
 	InstanceID InstanceID `json:",string"`
 	Amount     uint64     `json:",string"`
-	Pos        uint32
+	Pos        uint64
 }
 
 // Items is a map of items in the inventory
@@ -57,14 +56,6 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	return json.Unmarshal(data, (*map[string]*Item)(i))
-}
-
-// AppInfo gives informations on the app
-type AppInfo struct {
-	AppID mangosteam.AppID
-	Name  string
-	Icon  string
-	Link  string
 }
 
 // Description contains the market hash name
@@ -89,10 +80,6 @@ type Description struct {
 	Tradable   int
 	Marketable int
 	Commodity  int
-
-	Descriptions DescriptionLines
-	// Application-specific data, like "def_index" and "quality" for TF2
-	AppData map[string]string
 }
 
 // Descriptions for the inventory
@@ -104,22 +91,4 @@ func (d *Descriptions) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	return json.Unmarshal(data, (*map[string]*Description)(d))
-}
-
-// DescriptionLine is part of the json
-type DescriptionLine struct {
-	Value string
-	Type  *string // Is `html` for HTML descriptions
-	Label *string
-}
-
-// DescriptionLines list of descriptions
-type DescriptionLines []*DescriptionLine
-
-// UnmarshalJSON will unmarshal the json into description lines
-func (d *DescriptionLines) UnmarshalJSON(data []byte) error {
-	if bytes.Equal(data, []byte(`""`)) {
-		return nil
-	}
-	return json.Unmarshal(data, (*[]*DescriptionLine)(d))
 }
