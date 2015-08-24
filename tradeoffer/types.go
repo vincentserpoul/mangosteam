@@ -64,9 +64,9 @@ type CEconTradeOffer struct {
 
 // CEconTradeOffers contains a list of tradeoffers, sent and received
 type CEconTradeOffers struct {
-	Sent         []*CEconTradeOffer `json:"trade_offers_sent"`
-	Received     []*CEconTradeOffer `json:"trade_offers_received"`
-	Descriptions []Description      `json:"descriptions"`
+	Sent         []*CEconTradeOffer     `json:"trade_offers_sent"`
+	Received     []*CEconTradeOffer     `json:"trade_offers_received"`
+	Descriptions inventory.Descriptions `json:"descriptions"`
 }
 
 // SteamTradeOfferID is the identifier of the tradeoffer within steam network
@@ -76,34 +76,3 @@ type SteamTradeOfferID uint64
 func (steamTradeOfferID SteamTradeOfferID) String() string {
 	return strconv.FormatUint(uint64(steamTradeOfferID), 10)
 }
-
-// Description contains the market hash name
-type Description struct {
-	AppID      mangosteam.AppID     `json:"appid"`
-	ClassID    inventory.ClassID    `json:",string"`
-	InstanceID inventory.InstanceID `json:",string"`
-
-	IconURL     string `json:"icon_url"`
-	IconDragURL string `json:"icon_drag_url"`
-
-	Name           string
-	MarketHashName string `json:"market_hash_name"`
-	MarketName     string `json:"market_name"`
-
-	// Colors in hex, for example `B2B2B2`
-	NameColor       string `json:"name_color"`
-	BackgroundColor string `json:"background_color"`
-
-	Type string
-
-	Tradable   bool
-	Marketable bool
-	Commodity  bool
-
-	Descriptions inventory.DescriptionLines
-	// Application-specific data, like "def_index" and "quality" for TF2
-	AppData map[string]string
-}
-
-// Descriptions for the inventory
-type Descriptions map[string]*Description
