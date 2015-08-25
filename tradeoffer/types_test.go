@@ -5,8 +5,7 @@ import (
 )
 
 func TestSteamTradeOfferID(t *testing.T) {
-	var steamTradeOfferID SteamTradeOfferID
-	steamTradeOfferID = 123
+	steamTradeOfferID := SteamTradeOfferID(123)
 	expectedValue := "123"
 	gotValue := steamTradeOfferID.String()
 	if expectedValue != gotValue {
