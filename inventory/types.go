@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"strconv"
-
-	"github.com/vincentserpoul/mangosteam"
 )
 
 // ItemID represents the unique identifier for an item
@@ -56,39 +54,4 @@ func (i *Items) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 	return json.Unmarshal(data, (*map[string]*Item)(i))
-}
-
-// Description contains the market hash name
-type Description struct {
-	AppID      mangosteam.AppID `json:",string"`
-	ClassID    ClassID          `json:",string"`
-	InstanceID InstanceID       `json:",string"`
-
-	IconURL     string `json:"icon_url"`
-	IconDragURL string `json:"icon_drag_url"`
-
-	Name           string
-	MarketHashName string `json:"market_hash_name"`
-	MarketName     string `json:"market_name"`
-
-	// Colors in hex, for example `B2B2B2`
-	NameColor       string `json:"name_color"`
-	BackgroundColor string `json:"background_color"`
-
-	Type string
-
-	Tradable   int
-	Marketable int
-	Commodity  int
-}
-
-// Descriptions for the inventory
-type Descriptions map[string]*Description
-
-// UnmarshalJSON for the inventory currencies
-func (d *Descriptions) UnmarshalJSON(data []byte) error {
-	if bytes.Equal(data, []byte("[]")) {
-		return nil
-	}
-	return json.Unmarshal(data, (*map[string]*Description)(d))
 }

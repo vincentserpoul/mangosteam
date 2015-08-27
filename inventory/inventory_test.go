@@ -60,6 +60,7 @@ func TestGetUserWebInventoryMock(t *testing.T) {
 				Pos:        uint64(1),
 			},
 		},
+
 		Descriptions: Descriptions{
 			"77838_0": &Description{
 				AppID:           mangosteam.AppID(730),
@@ -76,6 +77,21 @@ func TestGetUserWebInventoryMock(t *testing.T) {
 				Tradable:        0,
 				Marketable:      0,
 				Commodity:       0,
+				Tags: Tags{
+					{
+						InternalName: "CSGO_Type_Collectible",
+						Name:         "Collectible",
+						Category:     "Type",
+						CategoryName: "Type",
+					},
+					{
+						InternalName: "Rarity_Ancient",
+						Name:         "Extraordinary",
+						Category:     "Rarity",
+						Color:        "eb4b4b",
+						CategoryName: "Quality",
+					},
+				},
 			},
 			"2107773_0": &Description{
 				AppID:           mangosteam.AppID(730),
@@ -92,6 +108,27 @@ func TestGetUserWebInventoryMock(t *testing.T) {
 				Tradable:        1,
 				Marketable:      1,
 				Commodity:       0,
+				Tags: Tags{
+					{
+						InternalName: "CSGO_Type_Shotgun",
+						Name:         "Shotgun",
+						Category:     "Type",
+						CategoryName: "Type",
+					},
+					{
+						InternalName: "Rarity_Common_Weapon",
+						Name:         "Consumer Grade",
+						Category:     "Rarity",
+						Color:        "b0c3d9",
+						CategoryName: "Quality",
+					},
+					{
+						InternalName: "WearCategory2",
+						Name:         "Field-Tested",
+						Category:     "Exterior",
+						CategoryName: "Exterior",
+					},
+				},
 			},
 		},
 	}

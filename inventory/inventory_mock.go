@@ -73,12 +73,6 @@ func GetMockOKProfilesInventory() string {
 		          "category_name": "Type"
 		        },
 		        {
-		          "internal_name": "normal",
-		          "name": "Normal",
-		          "category": "Quality",
-		          "category_name": "Category"
-		        },
-		        {
 		          "internal_name": "Rarity_Ancient",
 		          "name": "Extraordinary",
 		          "category": "Rarity",
@@ -153,24 +147,6 @@ func GetMockOKProfilesInventory() string {
 		          "name": "Shotgun",
 		          "category": "Type",
 		          "category_name": "Type"
-		        },
-		        {
-		          "internal_name": "weapon_xm1014",
-		          "name": "XM1014",
-		          "category": "Weapon",
-		          "category_name": "Weapon"
-		        },
-		        {
-		          "internal_name": "set_lake",
-		          "name": "The Lake Collection",
-		          "category": "ItemSet",
-		          "category_name": "Collection"
-		        },
-		        {
-		          "internal_name": "normal",
-		          "name": "Normal",
-		          "category": "Quality",
-		          "category_name": "Category"
 		        },
 		        {
 		          "internal_name": "Rarity_Common_Weapon",
