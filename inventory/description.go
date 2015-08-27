@@ -57,9 +57,9 @@ type Tag struct {
 }
 
 // GetTagNameFromCategory returns the tag name for a specific category
-func (t *Tags) GetTagNameFromCategory(category string) string {
+func (t Tags) GetTagNameFromCategory(category string) string {
 
-	for _, tag := range *t {
+	for _, tag := range t {
 		if tag.Category == category {
 			return tag.Name
 		}
