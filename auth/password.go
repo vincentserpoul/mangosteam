@@ -30,7 +30,7 @@ func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 	logrus.WithFields(logrus.Fields{
 		"username": username,
 	}).Debug("calling ", baseSteamWebURL+"/login/getrsakey")
-
+	// Est-ce testable voir solution login_test.go
 	resp, err := http.PostForm(baseSteamWebURL+"/login/getrsakey",
 		url.Values{"username": {username}})
 
