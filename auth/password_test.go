@@ -132,7 +132,7 @@ func TestExtractRSAKeyFromJSONBadJSON(t *testing.T) {
 	}
 }
 
-func TestMockOkGetRSAKey(t *testing.T) {
+func TestMockOKGetRSAKey(t *testing.T) {
 	username := "mangosteam"
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -156,19 +156,19 @@ func TestMockOkGetRSAKey(t *testing.T) {
 	}
 }
 
-func TestGetRSAKeySteam(t *testing.T) {
+func TestMockKOGetRSAKey(t *testing.T) {
 	username := "mangosteam"
-	baseSteamURL := "https://steamcommunity.com/"
 
-	key, err := GetRSAKey(baseSteamURL, username)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, getMockKOLoginGetrsakey())
+	}))
+	defer ts.Close()
 
-	if err != nil {
-		t.Errorf("WARNING GetRSAkey from steam is not working anymore or %s has been deactivated", username)
-	}
-	if key.PublicKeyExponent == "" ||
-		key.PublicKeyModulus == "" ||
-		key.SteamID == "" ||
-		key.Timestamp == "" {
-		t.Errorf("GetRSAkey from steam is not returning a complete key but %v instead", key)
+	_, err := GetRSAKey(ts.URL, username)
+
+	if err == nil {
+		t.Errorf("GetRSAkey httptest should failing")
 	}
 }
