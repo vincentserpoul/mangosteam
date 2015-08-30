@@ -122,11 +122,8 @@ func TestKODoLoginForm(t *testing.T) {
 	}))
 	defer ts.Close()
 	// Change timeOut to make an HTTP protocol error timeout
-	var myTransport http.RoundTripper = &http.Transport{
-		ResponseHeaderTimeout: time.Millisecond * 100,
-	}
-
-	client := http.Client{Transport: myTransport}
+	ts.Config.WriteTimeout = 20 * time.Millisecond
+	client := http.Client{}
 
 	username := "mangosteam"
 	encryptedPassword := "123"
