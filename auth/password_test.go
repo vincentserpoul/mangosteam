@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -183,8 +182,6 @@ func TestMockKOGetRSAKey(t *testing.T) {
 	defer ts.Close()
 
 	key, err := GetRSAKey(ts.URL, username)
-
-	log.Printf("%v, %v", key, err)
 
 	if key != nil || err == nil {
 		t.Errorf("GetRSAkey failing but not showing errors")
