@@ -213,7 +213,6 @@ func TestKODoLoginPostForm(t *testing.T) {
 		// or if there was an HTTP protocol error. A non-2xx response doesn't cause an error.
 		time.Sleep(200 * time.Millisecond)
 	}))
-	ts.Config.ReadTimeout = 20 * time.Millisecond
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
 	_, err := GetRSAKey(ts.URL, username)
