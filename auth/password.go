@@ -35,7 +35,7 @@ func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 		url.Values{"username": {username}})
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("mangosteam GetRSAKey(%s): %v", username, err)
 	}
 
 	defer resp.Body.Close()
@@ -44,7 +44,7 @@ func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 
 	key, err := extractRSAKeyFromJSON(body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("mangosteam GetRSAKey(%s): %v", username, err)
 	}
 
 	logrus.WithFields(logrus.Fields{
@@ -86,7 +86,8 @@ func EncryptPassword(password string, rsaKey *RSAKey) (string, error) {
 	pubkeyExpInt, err := strconv.ParseInt(rsaKey.PublicKeyExponent, 16, 64)
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("mangosteam EncryptPassword(steamID: %v): %v",
+			rsaKey.SteamID, err)
 	}
 
 	// convert the hex string to a big int (we can't use ParseInt)
@@ -101,7 +102,8 @@ func EncryptPassword(password string, rsaKey *RSAKey) (string, error) {
 	encryptedPass, err := rsa.EncryptPKCS1v15(rand.Reader, &realKey, []byte(password))
 
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("mangosteam EncryptPassword(steamID: %v): %v",
+			rsaKey.SteamID, err)
 	}
 
 	return base64.StdEncoding.EncodeToString(encryptedPass), nil

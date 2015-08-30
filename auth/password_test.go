@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -156,7 +157,7 @@ func TestMockOKGetRSAKey(t *testing.T) {
 	}
 }
 
-func TestMockKOGetRSAKey(t *testing.T) {
+func TestMockKOSteamGetRSAKey(t *testing.T) {
 	username := "mangosteam"
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -170,5 +171,22 @@ func TestMockKOGetRSAKey(t *testing.T) {
 
 	if err == nil {
 		t.Errorf("GetRSAkey httptest should failing")
+	}
+}
+
+func TestMockKOGetRSAKey(t *testing.T) {
+	username := "mangosteam"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer ts.Close()
+
+	key, err := GetRSAKey(ts.URL, username)
+
+	log.Printf("%v, %v", key, err)
+
+	if key != nil || err == nil {
+		t.Errorf("GetRSAkey failing but not showing errors")
 	}
 }
