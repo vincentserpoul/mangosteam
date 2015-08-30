@@ -190,3 +190,19 @@ func TestMockKOGetRSAKey(t *testing.T) {
 		t.Errorf("GetRSAkey failing but not showing errors")
 	}
 }
+
+func TestGetMockOKLoginGetrsakey(t *testing.T) {
+	str := getMockOKLoginGetrsakey()
+
+	if len(str) == 0 {
+		t.Errorf("MockOKLoginGetrsakey is not working anymore")
+	}
+}
+
+func TestGetMockKOLoginGetrsakey(t *testing.T) {
+	str := getMockKOLoginGetrsakey()
+
+	if len(str) == 0 {
+		t.Errorf("getMockKOLoginGetrsakey is not working anymore")
+	}
+}
