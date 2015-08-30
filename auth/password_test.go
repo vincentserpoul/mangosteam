@@ -204,6 +204,7 @@ func TestGetMockKOLoginGetrsakey(t *testing.T) {
 		t.Errorf("getMockKOLoginGetrsakey is not working anymore")
 	}
 }
+
 func TestKODoLoginPostForm(t *testing.T) {
 	username := "mangosteam"
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
