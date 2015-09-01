@@ -32,3 +32,27 @@ func TestLoginEncryptPassword(t *testing.T) {
 	user.Login(ts.URL)
 	return
 }
+
+func TestLoginDoLogin(t *testing.T) {
+	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, getMockOKLoginGetrsakey())
+	}))
+	defer ts.Close()
+	user.Login(ts.URL)
+	return
+}
+
+func TestOKLogin(t *testing.T) {
+	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, getMockOKLoginGetrsakey())
+	}))
+	defer ts.Close()
+	user.Login(ts.URL)
+	return
+}
