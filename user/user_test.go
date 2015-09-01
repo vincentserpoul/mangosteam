@@ -17,7 +17,10 @@ func TestLoginGetRSAKey(t *testing.T) {
 		fmt.Fprintf(w, getMockKOLoginGetrsakey())
 	}))
 	defer ts.Close()
-	user.Login(ts.URL)
+	err := user.Login(ts.URL)
+	if err == nil {
+		t.Errorf("Dologin returns no error when login failed, %v", err)
+	}
 	return
 }
 
@@ -29,7 +32,10 @@ func TestLoginEncryptPassword(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
-	user.Login(ts.URL)
+	err := user.Login(ts.URL)
+	if err == nil {
+		t.Errorf("Dologin returns no error when empty password, %v", err)
+	}
 	return
 }
 
@@ -41,7 +47,10 @@ func TestLoginDoLogin(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
-	user.Login(ts.URL)
+	err := user.Login(ts.URL)
+	if err == nil {
+		t.Errorf("Dologin returns when status not found error , %v", err)
+	}
 	return
 }
 
@@ -53,6 +62,9 @@ func TestOKLogin(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
-	user.Login(ts.URL)
+	err := user.Login(ts.URL)
+	if err != nil {
+		t.Errorf("Dologin should not failed")
+	}
 	return
 }
