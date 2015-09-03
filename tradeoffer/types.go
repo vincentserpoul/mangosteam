@@ -12,28 +12,28 @@ type State uint
 
 const (
 	// ETradeOfferStateCreated /!\ non steam status, used to know the TO has been created
-	ETradeOfferStateCreated State = 0
+	ETradeOfferStateCreated State = iota
 	// ETradeOfferStateInvalid Invalid
-	ETradeOfferStateInvalid = 1
+	ETradeOfferStateInvalid
 	// ETradeOfferStateActive This trade offer has been sent, neither party has acted on it yet.
-	ETradeOfferStateActive = 2
+	ETradeOfferStateActive
 	// ETradeOfferStateAccepted The trade offer was accepted by the recipient and items were exchanged.
-	ETradeOfferStateAccepted = 3
+	ETradeOfferStateAccepted
 	// ETradeOfferStateCountered The recipient made a counter offer
-	ETradeOfferStateCountered = 4
+	ETradeOfferStateCountered
 	// ETradeOfferStateExpired The trade offer was not accepted before the expiration date
-	ETradeOfferStateExpired = 5
+	ETradeOfferStateExpired
 	// ETradeOfferStateCanceled The sender cancelled the offer
-	ETradeOfferStateCanceled = 6
+	ETradeOfferStateCanceled
 	// ETradeOfferStateDeclined The recipient declined the offer
-	ETradeOfferStateDeclined = 7
+	ETradeOfferStateDeclined
 	// ETradeOfferStateInvalidItems Some of the items in the offer are no longer available
 	// (indicated by the missing flag in the output)
-	ETradeOfferStateInvalidItems = 8
+	ETradeOfferStateInvalidItems
 	// ETradeOfferStateEmailPending The offer hasn't been sent yet and is awaiting email confirmation
-	ETradeOfferStateEmailPending = 9
+	ETradeOfferStateEmailPending
 	// ETradeOfferStateEmailCanceled The receiver cancelled the offer via email
-	ETradeOfferStateEmailCanceled = 10
+	ETradeOfferStateEmailCanceled
 )
 
 // CEconAsset represents an asset in steam web api

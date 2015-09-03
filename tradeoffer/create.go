@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"strings"
 
@@ -21,6 +20,7 @@ const (
 // Result is the response body from the tradeoffer create request
 type Result struct {
 	TradeOfferID SteamTradeOfferID `json:",string"`
+	Error        string            `json:"strError"`
 }
 
 // CreateSteamTradeOffer sends a new trade offer to the given Steam user.
@@ -32,20 +32,20 @@ func CreateSteamTradeOffer(
 	accessToken string,
 	myItems, theirItems []*Asset,
 	message string,
-) (*http.Request, *http.Response, *Result, error) {
+) (*Result, error) {
 
 	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
 
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	tradeOfferCreateParamsJSON, err := getTradeOfferCreateParams(accessToken)
 
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, err
 	}
 
 	bodyTradeOffer := getBodyTradeOffer(
@@ -53,23 +53,27 @@ func CreateSteamTradeOffer(
 		message)
 
 	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(bodyTradeOffer))
+
+	if err != nil {
+		return nil, err
+	}
+
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	// Headers
 	referer := baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
 	req.Header.Add("Referer", referer)
 
-	dump, err := httputil.DumpRequest(req, true)
-
-	fmt.Println(string(dump))
-
 	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 
 	// If we failed, error out
 	if resp.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(resp.Body)
-		return req, resp, nil,
+		return nil,
 			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
@@ -79,10 +83,10 @@ func CreateSteamTradeOffer(
 	err = decoder.Decode(result)
 
 	if err != nil {
-		return req, resp, nil, err
+		return nil, err
 	}
 
-	return req, resp, result, nil
+	return result, nil
 }
 
 func getJSONTradeOffer(myItems, theirItems []*Asset) ([]byte, error) {
