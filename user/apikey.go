@@ -39,16 +39,19 @@ func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 			APIKey = PotentialAPIKey
 		}
 	}
-
-	if APIKey == "" {
-		err = user.registerAPIKey(baseSteamWebURL)
-		if err != nil {
-			return "", fmt.Errorf("steam user GetAPIKey(): %v error %v", user.Username, err)
+	/*
+		if APIKey == "" {
+			err = user.registerAPIKey(baseSteamWebURL)
+			if err != nil {
+				return "", fmt.Errorf("steam user GetAPIKey(): %v error %v", user.Username, err)
+			}
+			return "", fmt.Errorf("Empty or APIKey  lenght not 32 , for user %v", user.Username) // JJS_TEST
+			// return user.getAPIKey(baseSteamWebURL) JJS_TEST Impossible avec la récursion
 		}
-		return "", fmt.Errorf("Empty or APIKey  lenght not 32 , for user %v", user.Username) // JJS_TEST
-		// return user.getAPIKey(baseSteamWebURL) JJS_TEST Impossible avec la récursion
+	*/
+	if APIKey == "" {
+		return "", fmt.Errorf("Empty or APIKey  lenght not 32 , for user %v", user.Username)
 	}
-
 	return APIKey, nil
 }
 
