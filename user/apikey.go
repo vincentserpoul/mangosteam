@@ -79,3 +79,30 @@ func (user *User) registerAPIKey(baseSteamWebURL string) error {
 
 	return nil
 }
+
+// revokeAPIKey cancel Key
+func (user *User) revokeAPIKey(baseSteamWebURL string) error {
+
+	client := user.NewWebSteamClient(baseSteamWebURL)
+	baseURL, _ := url.Parse(baseSteamWebURL + "/dev/revokekey")
+
+	form := url.Values{}
+	form.Add("domain", "localhost")
+	form.Add("sessionid", "1")
+	form.Add("submit", "Revoke My Steam Web API Key")
+
+	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(form.Encode()))
+	if err != nil {
+		return fmt.Errorf("steam user revokeAPIKey(): %v error %v", user.Username, err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("steam user revokeAPIKey(): %v error %v", user.Username, err)
+	}
+
+	defer resp.Body.Close()
+
+	return nil
+}
