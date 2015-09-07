@@ -50,7 +50,7 @@ func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 		}
 	*/
 	if APIKey == "" {
-		return "", fmt.Errorf("Empty or APIKey  lenght not 32 , for user %v", user.Username)
+		return "", fmt.Errorf("GetAPIkey : Empty or APIKey  lenght not 32 , for user %v", user.Username)
 	}
 	return APIKey, nil
 }
