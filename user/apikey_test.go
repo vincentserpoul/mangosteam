@@ -82,3 +82,32 @@ func TestEmptyAPIKey(t *testing.T) {
 	}
 	return
 }
+
+func TestOKrevokeAPIKey(t *testing.T) {
+	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, getMockOKLoginDologin())
+	}))
+	defer ts.Close()
+	err := user.revokeAPIKey(ts.URL)
+	if err != nil {
+		t.Errorf("RevokeAPIKey should be successful %v", err)
+	}
+	return
+}
+
+func TestKoDorevokeAPIKey(t *testing.T) {
+	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		time.Sleep(200 * time.Millisecond)
+	}))
+	ts.Config.WriteTimeout = 20 * time.Millisecond
+	defer ts.Close()
+	err := user.revokeAPIKey(ts.URL)
+	if err == nil {
+		t.Errorf("Do RevokeAPIKey returns no error when Do PostForm failed")
+	}
+	return
+}
