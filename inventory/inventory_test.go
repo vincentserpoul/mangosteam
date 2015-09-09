@@ -6,9 +6,122 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/vincentserpoul/mangosteam"
 )
+
+func TestAreItemsDataSimilarUserInventoryNotPresent(t *testing.T) {
+
+	var d Inventory
+	var inv, inv2 Item
+	var listInv []*Item
+	inv = Item{1234567890, 730, 3, 100, 1}
+	inv2 = Item{12567890, 73, 30, 10, 10}
+	listInv = append(listInv, &inv)
+	d.Items = make(map[string]*Item)
+	d.Items["1234567890"] = &inv2
+	r := d.AreItemsDataSimilarUserInventory(listInv)
+	if r != false {
+		t.Errorf("AreItemsDataSimilarUserInventory should return false")
+	}
+}
+
+func TestAreItemsDataSimilarUserInventoryOK(t *testing.T) {
+
+	var d Inventory
+	var inv Item
+	var listInv []*Item
+	inv = Item{1234567890, 730, 3, 100, 1}
+	listInv = append(listInv, &inv)
+	d.Items = make(map[string]*Item)
+	d.Items["1234567890"] = &inv
+	r := d.AreItemsDataSimilarUserInventory(listInv)
+	if r != true {
+		t.Errorf("AreItemsDataSimilarUserInventory should return true")
+	}
+}
+
+func TestAreItemsWithinUserInventoryNotPresent(t *testing.T) {
+
+	var d Inventory
+	var inv Item
+	var listInv []*Item
+	inv = Item{1234567890, 730, 3, 100, 1}
+	listInv = append(listInv, &inv)
+	d.Items = make(map[string]*Item)
+	d.Items["1"] = &inv
+	r := d.AreItemsWithinUserInventory(listInv)
+	if r != false {
+		t.Errorf("AreItemsWithinUserInventory should return false")
+	}
+}
+
+func TestAreItemsWithinUserInventoryOK(t *testing.T) {
+
+	var d Inventory
+	var inv Item
+	var listInv []*Item
+	inv.ID = 1234567890
+	inv.ClassID = 730
+	inv.InstanceID = 1
+	inv.Amount = 100
+	inv.Pos = 1
+	listInv = append(listInv, &inv)
+	d.Items = make(map[string]*Item)
+	d.Items["1234567890"] = &inv
+	r := d.AreItemsWithinUserInventory(listInv)
+	if r != true {
+		t.Errorf("AreItemsWithinUserInventory should return true")
+	}
+}
+
+func TestAreItemsWithinUserInventoryEmpty(t *testing.T) {
+	var d Inventory
+	r := d.AreItemsWithinUserInventory(nil)
+	if r != false {
+		t.Errorf("AreItemsWithinUserInventory should return false")
+	}
+}
+
+func TestAreItemsDataSimilarUserInventoryEmpty(t *testing.T) {
+	var d Inventory
+	r := d.AreItemsDataSimilarUserInventory(nil)
+	if r != false {
+		t.Errorf("AreItemsWithinUserInventory should return false")
+	}
+}
+func TestGetUserWebInventoryEmpty(t *testing.T) {
+	steamID := mangosteam.SteamID(1234567890)
+	appID := mangosteam.AppID(730)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, GetMockGetUserWebInventoryEmpty())
+	}))
+	defer ts.Close()
+	_, err := GetUserWebInventory(ts.URL, appID, steamID)
+	if err == nil {
+		t.Errorf("GetUserWebInventory should return error with no inventory")
+	}
+}
+
+func TestGetUserWebInventoryGet(t *testing.T) {
+	steamID := mangosteam.SteamID(1234567890)
+	appID := mangosteam.AppID(730)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		time.Sleep(200 * time.Millisecond)
+	}))
+	defer ts.Close()
+	ts.Config.WriteTimeout = 20 * time.Millisecond
+	_, err := GetUserWebInventory(ts.URL, appID, steamID)
+	if err == nil {
+		t.Errorf("GetUserWebInventory should return error with timeout")
+	}
+
+}
 
 func TestGetUserWebInventoryURL(t *testing.T) {
 
