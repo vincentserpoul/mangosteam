@@ -1,5 +1,10 @@
 package inventory
 
+// GetMockGetUserWebInventoryEmpty test empty Body
+func GetMockGetUserWebInventoryEmpty() string {
+	return ("")
+}
+
 // GetMockOKProfilesInventory mocks /profiles/1234567890/inventory/json/730/2
 func GetMockOKProfilesInventory() string {
 	return `
