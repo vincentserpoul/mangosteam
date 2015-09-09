@@ -106,7 +106,7 @@ func TestGetUserWebInventoryEmpty(t *testing.T) {
 	}
 }
 
-func TestGetUserWebInventoryGet(t *testing.T) {
+func TestGetUserWebInventoryTimeout(t *testing.T) {
 	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +139,7 @@ func TestGetUserWebInventoryURL(t *testing.T) {
 
 }
 
-func TestGetUserWebInventoryMock(t *testing.T) {
+func TestGetUserWebInventory(t *testing.T) {
 	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
 

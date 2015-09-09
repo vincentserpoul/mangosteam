@@ -27,6 +27,7 @@ func getMockExistingAPIKeyPage() string {
         </html>
     `
 }
+
 func getMockOKLoginDologin() string {
 
 	return `
@@ -74,19 +75,20 @@ func getMockEmptyAPIKeyPage() string {
         </html>
     `
 }
+
 func getMockAccessDeniedgetAPIKey() string {
 
 	return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-</head>
-<body>
-<div id="mainContents">
-<h2>Access Denied</h2>
-</div>
-</body>
-</html>
-`
+        <!DOCTYPE html>
+        <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+                <div id="mainContents">
+                    <h2>Access Denied</h2>
+                </div>
+            </body>
+        </html>
+    `
 }

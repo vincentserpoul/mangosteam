@@ -51,7 +51,7 @@ func TestOKregisterAPIKey(t *testing.T) {
 	}
 	return
 }
-func TestKODoClient(t *testing.T) {
+func TestKOClient(t *testing.T) {
 	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -83,7 +83,7 @@ func TestEmptyAPIKey(t *testing.T) {
 	return
 }
 
-func TestOKrevokeAPIKey(t *testing.T) {
+func TestOKRevokeAPIKey(t *testing.T) {
 	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -97,7 +97,7 @@ func TestOKrevokeAPIKey(t *testing.T) {
 	return
 }
 
-func TestKoDorevokeAPIKey(t *testing.T) {
+func TestKORevokeAPIKey(t *testing.T) {
 	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
