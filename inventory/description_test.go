@@ -1,9 +1,15 @@
 package inventory
 
-import (
-	"testing"
-)
+import "testing"
 
+func TestUnmarshalJSON(t *testing.T) {
+	var d Descriptions
+	b := []byte("[]")
+	err := d.UnmarshalJSON(b)
+	if err != nil {
+		t.Errorf("UnmarshalJSON should return no error if empty description")
+	}
+}
 func TestGetTagNameFromCategory(t *testing.T) {
 	cases := []struct {
 		tags             Tags
