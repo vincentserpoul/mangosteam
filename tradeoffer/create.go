@@ -6,11 +6,20 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/vincentserpoul/mangosteam"
 	"github.com/vincentserpoul/mangosteam/user"
 )
+
+// SteamTradeOfferID is the identifier of the tradeoffer within steam network
+type SteamTradeOfferID uint64
+
+// String will turn a steamID into a string
+func (steamTradeOfferID SteamTradeOfferID) String() string {
+	return strconv.FormatUint(uint64(steamTradeOfferID), 10)
+}
 
 const (
 	newTradeOfferSendURL        string = "/tradeoffer/new/send"
