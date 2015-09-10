@@ -13,6 +13,14 @@ import (
 	"github.com/vincentserpoul/mangosteam/user"
 )
 
+// State represents the state of the tradeoffer, see constants
+type State uint
+
+const (
+	// ETradeOfferStateCreated /!\ non steam status, used to know the TO has been created
+	ETradeOfferStateCreated State = iota
+)
+
 // SteamTradeOfferID is the identifier of the tradeoffer within steam network
 type SteamTradeOfferID uint64
 
