@@ -51,6 +51,51 @@ func CreateSteamTradeOffer(
 	message string,
 ) (*Result, error) {
 
+	req, err := getCreateSteamTradeOfferRequest(
+		baseSteamWebURL,
+		sessionID,
+		otherSteamID,
+		accessToken,
+		myItems, theirItems,
+		message,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// If we failed, error out
+	if resp.StatusCode != 200 {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return nil,
+			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
+	}
+
+	// Load the JSON result into Result
+	result := new(Result)
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(result)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func getCreateSteamTradeOfferRequest(
+	baseSteamWebURL string,
+	sessionID string,
+	otherSteamID mangosteam.SteamID,
+	accessToken string,
+	myItems, theirItems []*Asset,
+	message string,
+) (*http.Request, error) {
 	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
@@ -81,29 +126,7 @@ func CreateSteamTradeOffer(
 	referer := baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
 	req.Header.Add("Referer", referer)
 
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	// If we failed, error out
-	if resp.StatusCode != 200 {
-		body, _ := ioutil.ReadAll(resp.Body)
-		return nil,
-			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
-	}
-
-	// Load the JSON result into Result
-	result := new(Result)
-	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(result)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return req, nil
 }
 
 func getJSONTradeOffer(myItems, theirItems []*Asset) ([]byte, error) {

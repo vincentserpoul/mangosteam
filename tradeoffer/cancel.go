@@ -14,8 +14,8 @@ import (
 const cancelTradeOfferURL string = "/tradeoffer/%d/decline"
 const cancelTradeOfferRefererURL string = "/profiles/%d/tradeoffers/"
 
-// CancelTradeOffer will cancel the specific tradeoffer, make sure the client is the right steam account
-func CancelTradeOffer(
+// CancelSteamTradeOffer will cancel the specific tradeoffer, make sure the client is the right steam account
+func CancelSteamTradeOffer(
 	baseSteamWebURL string,
 	client *http.Client,
 	sessionID string,
@@ -23,26 +23,12 @@ func CancelTradeOffer(
 	steamTradeOfferID SteamTradeOfferID,
 ) (*Result, error) {
 
-	baseURL, _ := url.Parse(baseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
-
-	cancelTOBody := struct {
-		SteamTradeOfferID
-	}{
+	req, err := getCancelSteamTradeOfferRequest(
+		baseSteamWebURL,
+		sessionID,
+		creatorSteamID,
 		steamTradeOfferID,
-	}
-
-	cancelTOBodyJSON, err := json.Marshal(cancelTOBody)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(string(cancelTOBodyJSON)))
-
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-
-	// Referer
-	referer := baseSteamWebURL + fmt.Sprintf(cancelTradeOfferRefererURL, creatorSteamID)
-	req.Header.Add("Referer", referer)
+	)
 
 	if err != nil {
 		return nil, err
@@ -72,4 +58,30 @@ func CancelTradeOffer(
 
 	return result, nil
 
+}
+
+func getCancelSteamTradeOfferRequest(
+	baseSteamWebURL string,
+	sessionID string,
+	creatorSteamID mangosteam.SteamID,
+	steamTradeOfferID SteamTradeOfferID,
+) (*http.Request, error) {
+
+	baseURL, _ := url.Parse(baseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
+
+	form := url.Values{}
+	form.Add("sessionid", sessionID)
+
+	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(form.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+
+	// Referer
+	referer := baseSteamWebURL + fmt.Sprintf(cancelTradeOfferRefererURL, creatorSteamID)
+	req.Header.Add("Referer", referer)
+
+	return req, nil
 }
