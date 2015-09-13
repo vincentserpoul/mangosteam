@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/vincentserpoul/mangosteam"
-	"github.com/vincentserpoul/mangosteam/user"
 )
 
 // State represents the state of the tradeoffer, see constants
@@ -197,44 +196,4 @@ func getBodyTradeOffer(
 	form.Add("json_tradeoffer", string(tradeOfferJSON))
 
 	return form.Encode()
-}
-
-// CreateCurlSteamTradeOffer creates a curl tradeoffer, mostly for simple tests
-func CreateCurlSteamTradeOffer(
-	baseSteamWebURL string,
-	otherSteamID mangosteam.SteamID,
-	user *steamuser.User,
-	assetID AssetID,
-	accessToken string,
-) (string, error) {
-
-	var userAsset []*Asset
-	asset := Asset{AssetID: assetID}
-	asset.Defaults(730)
-
-	tradeOfferJSON, err := getJSONTradeOffer(userAsset, []*Asset{&asset})
-	tradeOfferCreateParamsJSON, err := getTradeOfferCreateParams(accessToken)
-
-	bodyTradeOffer := getBodyTradeOffer(
-		"1",
-		otherSteamID,
-		tradeOfferJSON,
-		tradeOfferCreateParamsJSON,
-		"test curl user",
-	)
-	if err != nil {
-		return "", nil
-	}
-
-	curlString := "curl '" + baseSteamWebURL + newTradeOfferSendURL + "'" +
-		" -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8'" +
-		" -H 'Referer: " + baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID() +
-		"'" + " -H 'Cookie: " +
-		"steamMachineAuth" + user.SteamID.String() + "=" + user.SteamMachineAuth + "; " +
-		"sessionid=1; " +
-		"steamLogin=" + user.SteamLogin + "; " +
-		"steamLoginSecure=" + user.SteamLoginSecure + ";'" +
-		" --data '" + bodyTradeOffer + "'"
-
-	return curlString, nil
 }
