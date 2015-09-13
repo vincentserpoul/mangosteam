@@ -23,6 +23,37 @@ func TestSteamTradeOfferIDString(t *testing.T) {
 	}
 }
 
+func TestEmptyCreateSteamTradeOffer(t *testing.T) {
+	//baseSteamWebURL := `http://mockymocky.com`
+	sessionID := ""
+	otherSteamID := mangosteam.SteamID(1234567890)
+	accessToken := `Er_owt`
+	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
+	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	message := `Mock me over and over!`
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, createMockSteamTradeOffer())
+	}))
+	defer ts.Close()
+	client := http.Client{}
+	_, err := CreateSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		otherSteamID,
+		accessToken,
+		myItems, theirItems,
+		message,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+}
+
 func TestOKCreateSteamTradeOffer(t *testing.T) {
 	//baseSteamWebURL := `http://mockymocky.com`
 	sessionID := "1234abcde"
