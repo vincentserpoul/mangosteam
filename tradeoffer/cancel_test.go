@@ -1,11 +1,126 @@
 package tradeoffer
 
 import (
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/vincentserpoul/mangosteam"
 )
+
+func TestCancelSteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, cancelMockSteamTradeOffer())
+	}))
+	defer ts.Close()
+	client := http.Client{}
+
+	_, err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err != nil {
+		t.Errorf("CancelSteamTradeOffer threw an error where it shouldn't: %v", err)
+		return
+	}
+
+}
+
+func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		time.Sleep(200 * time.Millisecond)
+	}))
+	defer ts.Close()
+	ts.Config.WriteTimeout = 20 * time.Millisecond
+	client := http.Client{}
+
+	_, err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+
+}
+
+func TestNotFoundSteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer ts.Close()
+	client := http.Client{}
+
+	_, err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+
+}
+
+func TestNoBodySteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+	client := http.Client{}
+
+	_, err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+
+}
 
 func TestGetCancelSteamTradeOfferRequest(t *testing.T) {
 
