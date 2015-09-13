@@ -94,7 +94,7 @@ func CreateSteamTradeOffer(
 			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
-	// Load the JSON result into TradeTradeOfferResult
+	// Load the JSON result into Result
 	result := new(Result)
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(result)
