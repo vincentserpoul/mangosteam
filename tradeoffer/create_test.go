@@ -2,7 +2,6 @@ package tradeoffer
 
 import (
 	"io/ioutil"
-	"strconv"
 	"testing"
 
 	"github.com/vincentserpoul/mangosteam"
@@ -17,10 +16,7 @@ func TestSteamTradeOfferIDString(t *testing.T) {
 			"SteamTradeOfferID.String(%v), expected %v, got %v",
 			steamTradeOfferID.String(), expectedValue, gotValue,
 		)
-
 	}
-
-	return strconv.FormatUint(uint64(steamTradeOfferID), 10)
 }
 
 func TestGetCreateSteamTradeOfferRequest(t *testing.T) {
