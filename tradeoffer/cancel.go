@@ -11,8 +11,10 @@ import (
 	"github.com/vincentserpoul/mangosteam"
 )
 
-const cancelTradeOfferURL string = "/tradeoffer/%d/decline"
-const cancelTradeOfferRefererURL string = "/profiles/%d/tradeoffers/"
+const (
+	cancelTradeOfferURL        string = "/tradeoffer/%d/decline"
+	cancelTradeOfferRefererURL string = "/profiles/%d/tradeoffers/"
+)
 
 // CancelSteamTradeOffer will cancel the specific tradeoffer, make sure the client is the right steam account
 func CancelSteamTradeOffer(
