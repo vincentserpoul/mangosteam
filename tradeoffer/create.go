@@ -87,6 +87,9 @@ func getCreateSteamTradeOfferRequest(
 	myItems, theirItems []*Asset,
 	message string,
 ) (*http.Request, error) {
+	if (baseSteamWebURL == "") || (sessionID == "") || (otherSteamID.String() == "") || (accessToken == "") {
+		return nil, fmt.Errorf("getCreateSteamTradeOfferRequest: Empty baseSteambURL or sessionID or otherSteamID or accessToken")
+	}
 	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
