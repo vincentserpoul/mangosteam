@@ -46,7 +46,7 @@ func CancelSteamTradeOffer(
 	if resp.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(resp.Body)
 		return nil,
-			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
+			fmt.Errorf("tradeoffer CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
 	// Load the JSON result into Result
@@ -68,7 +68,9 @@ func getCancelSteamTradeOfferRequest(
 	creatorSteamID mangosteam.SteamID,
 	steamTradeOfferID SteamTradeOfferID,
 ) (*http.Request, error) {
-
+	if (baseSteamWebURL == "") || (sessionID == "") || (creatorSteamID.String() == "") || (steamTradeOfferID.String() == "") {
+		return nil, fmt.Errorf("getCancelSteamTradeOfferRequest: Empty baseSteambURL or sessionID or creatorSteamID or steamTradeOfferID")
+	}
 	baseURL, _ := url.Parse(baseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
 
 	form := url.Values{}

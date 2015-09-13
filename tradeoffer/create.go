@@ -64,7 +64,7 @@ func CreateSteamTradeOffer(
 	if resp.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(resp.Body)
 		return nil,
-			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
+			fmt.Errorf("tradeoffer CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
 	// Load the JSON result into Result
@@ -87,6 +87,9 @@ func getCreateSteamTradeOfferRequest(
 	myItems, theirItems []*Asset,
 	message string,
 ) (*http.Request, error) {
+	if (baseSteamWebURL == "") || (sessionID == "") || (otherSteamID.String() == "") || (accessToken == "") {
+		return nil, fmt.Errorf("getCreateSteamTradeOfferRequest: Empty baseSteambURL or sessionID or otherSteamID or accessToken")
+	}
 	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
