@@ -64,7 +64,7 @@ func CreateSteamTradeOffer(
 	if resp.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(resp.Body)
 		return nil,
-			fmt.Errorf("CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
+			fmt.Errorf("tradeoffer CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
 	// Load the JSON result into Result
