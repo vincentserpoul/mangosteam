@@ -157,9 +157,9 @@ func TestGetCancelSteamTradeOfferRequest(t *testing.T) {
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
-	expectedReqURL := `http://mockymocky.com/tradeoffer/1098765432/decline`
+	expectedReqURL := `http://mockymocky.com/tradeoffer/1098765432/cancel`
 	expectedContentHeader := `application/x-www-form-urlencoded; charset=UTF-8`
-	expectedReferer := `http://mockymocky.com/profiles/1234567890/tradeoffers/`
+	expectedReferer := `http://mockymocky.com/profiles/1234567890/tradeoffers/sent`
 	expectedReqBody := `sessionid=1234abcde`
 
 	req, err := getCancelSteamTradeOfferRequest(

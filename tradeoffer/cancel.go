@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	cancelTradeOfferURL        string = "/tradeoffer/%d/decline"
-	cancelTradeOfferRefererURL string = "/profiles/%d/tradeoffers/"
+	cancelTradeOfferURL        string = "/tradeoffer/%d/cancel"
+	cancelTradeOfferRefererURL string = "/profiles/%d/tradeoffers/sent"
 )
 
 // CancelSteamTradeOffer will cancel the specific tradeoffer, make sure the client is the right steam account
@@ -46,7 +46,7 @@ func CancelSteamTradeOffer(
 	if resp.StatusCode != 200 {
 		body, _ := ioutil.ReadAll(resp.Body)
 		return nil,
-			fmt.Errorf("tradeoffer CreateSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
+			fmt.Errorf("CancelSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
 	// Load the JSON result into Result
