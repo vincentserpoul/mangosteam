@@ -24,14 +24,17 @@ type RSAKey struct {
 	SteamID           string `json:"steamid"`
 }
 
+// GetRSAKeyURL is the URL used to get the RSA Key
+const GetRSAKeyURL string = "/login/getrsakey"
+
 // GetRSAKey queries steam to get the key needed to encode the password
 func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 
 	logrus.WithFields(logrus.Fields{
 		"username": username,
-	}).Debug("calling ", baseSteamWebURL+"/login/getrsakey")
+	}).Debug("calling ", baseSteamWebURL+GetRSAKeyURL)
 	// Est-ce testable voir solution login_test.go
-	resp, err := http.PostForm(baseSteamWebURL+"/login/getrsakey",
+	resp, err := http.PostForm(baseSteamWebURL+GetRSAKeyURL,
 		url.Values{"username": {username}})
 
 	if err != nil {

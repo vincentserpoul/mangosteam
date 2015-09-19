@@ -24,6 +24,14 @@ type User struct {
 func (user *User) Login(baseSteamWebURL string) error {
 	client := user.NewWebSteamClient(baseSteamWebURL)
 
+	isLoggedIn, err := auth.IsLoggedIn(baseSteamWebURL, client)
+	if err != nil {
+		return fmt.Errorf("user Login() : %v", err)
+	}
+	if isLoggedIn {
+		return nil
+	}
+
 	rsaKey, err := auth.GetRSAKey(baseSteamWebURL, user.Username)
 	if err != nil {
 		return fmt.Errorf("user Login(): %v", err)

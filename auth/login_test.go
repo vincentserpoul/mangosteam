@@ -218,3 +218,54 @@ func TestRespBody(t *testing.T) {
 
 	return
 }
+
+func TestOKIsLoggedIn(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer ts.Close()
+
+	client := http.Client{}
+
+	isLoggedIn, _ := IsLoggedIn(ts.URL, &client)
+
+	if !isLoggedIn {
+		t.Errorf("isLoggedIn should return true in case of status unauthorized")
+	}
+
+}
+
+func TestKOIsLoggedIn(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	defer ts.Close()
+
+	client := http.Client{}
+
+	isLoggedIn, _ := IsLoggedIn(ts.URL, &client)
+	if isLoggedIn {
+		t.Errorf("isLoggedIn should return false in case of status unauthorized")
+	}
+
+}
+
+func TestTimeOutIsLoggedIn(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		time.Sleep(200 * time.Millisecond)
+	}))
+	defer ts.Close()
+
+	ts.Config.WriteTimeout = 20 * time.Millisecond
+	client := http.Client{}
+
+	isLoggedIn, err := IsLoggedIn(ts.URL, &client)
+	if isLoggedIn || err == nil {
+		t.Errorf("isLoggedIn should return false and an error in case of http error")
+	}
+
+}

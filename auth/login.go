@@ -13,6 +13,13 @@ type doLogInResponse struct {
 	EmailauthNeeded bool `json:"emailauth_needed"`
 }
 
+const (
+	// DoLoginURL URL used for login
+	DoLoginURL string = "/login/dologin"
+	// IsLoggedInURL URL used to check if user is logged in
+	IsLoggedInURL string = "/actions/GetNotificationCounts"
+)
+
 // DoLogin is used to log in the steam account after we got the encrypted password
 func DoLogin(
 	baseSteamWebURL string,
@@ -25,7 +32,7 @@ func DoLogin(
 	captchaKeyedIn string,
 ) error {
 
-	baseURL, _ := url.Parse(baseSteamWebURL + "/login/dologin")
+	baseURL, _ := url.Parse(baseSteamWebURL + DoLoginURL)
 
 	// default value set to -1
 	if captchaGID == "" {
@@ -79,4 +86,18 @@ func DoLogin(
 	}
 
 	return nil
+}
+
+// IsLoggedIn checks if a user is logged in or not
+func IsLoggedIn(baseSteamWebURL string, client *http.Client) (bool, error) {
+	resp, err := client.Get(baseSteamWebURL + IsLoggedInURL)
+
+	if err != nil {
+		return false, fmt.Errorf("auth IsLoggedin(): %v", err)
+	}
+	if resp.StatusCode == http.StatusOK {
+		return true, nil
+	}
+
+	return false, nil
 }
