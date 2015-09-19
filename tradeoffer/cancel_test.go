@@ -15,7 +15,7 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 
 	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
-	steamTradeOfferID := SteamTradeOfferID(1098765432)
+	steamTradeOfferID := SteamTradeOfferID(123456)
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -25,7 +25,7 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 	defer ts.Close()
 	client := http.Client{}
 
-	_, err := CancelSteamTradeOffer(
+	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
 		sessionID,
@@ -33,7 +33,7 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 		steamTradeOfferID,
 	)
 	if err != nil {
-		t.Errorf("CreateSteamTradeOffer error: %v", err)
+		t.Errorf("CancelSteamTradeOffer error: %v", err)
 		return
 	}
 
@@ -53,7 +53,7 @@ func TestEmptyCancelSteamTradeOfferRequest(t *testing.T) {
 	defer ts.Close()
 	client := http.Client{}
 
-	_, err := CancelSteamTradeOffer(
+	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
 		sessionID,
@@ -82,7 +82,7 @@ func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	client := http.Client{}
 
-	_, err := CancelSteamTradeOffer(
+	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
 		sessionID,
@@ -109,7 +109,7 @@ func TestNotFoundSteamTradeOffer(t *testing.T) {
 	defer ts.Close()
 	client := http.Client{}
 
-	_, err := CancelSteamTradeOffer(
+	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
 		sessionID,
@@ -136,7 +136,7 @@ func TestNoBodySteamTradeOffer(t *testing.T) {
 	defer ts.Close()
 	client := http.Client{}
 
-	_, err := CancelSteamTradeOffer(
+	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
 		sessionID,
@@ -144,6 +144,62 @@ func TestNoBodySteamTradeOffer(t *testing.T) {
 		steamTradeOfferID,
 	)
 	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+
+}
+
+func TestWeird500SteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, cancelWeird500MockSteamTradeOffer())
+	}))
+	defer ts.Close()
+	client := http.Client{}
+
+	err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+
+}
+
+func TestWeird500Success16SteamTradeOffer(t *testing.T) {
+
+	sessionID := "1234abcde"
+	creatorSteamID := mangosteam.SteamID(1234567890)
+	steamTradeOfferID := SteamTradeOfferID(1098765432)
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, cancelWeird500Success16SteamTradeOffer())
+	}))
+	defer ts.Close()
+	client := http.Client{}
+
+	err := CancelSteamTradeOffer(
+		ts.URL,
+		&client,
+		sessionID,
+		creatorSteamID,
+		steamTradeOfferID,
+	)
+	if err != nil {
 		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
 		return
 	}
