@@ -29,6 +29,7 @@ const (
 type Result struct {
 	TradeOfferID SteamTradeOfferID `json:",string"`
 	Error        string            `json:"strError"`
+	Success      int               `json:"success"`
 }
 
 // CreateSteamTradeOffer sends a new trade offer to the given Steam user.

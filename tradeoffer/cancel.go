@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -23,7 +24,7 @@ func CancelSteamTradeOffer(
 	sessionID string,
 	creatorSteamID mangosteam.SteamID,
 	steamTradeOfferID SteamTradeOfferID,
-) (*Result, error) {
+) (bool, error) {
 
 	req, err := getCancelSteamTradeOfferRequest(
 		baseSteamWebURL,
@@ -33,32 +34,38 @@ func CancelSteamTradeOffer(
 	)
 
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	defer resp.Body.Close()
 
+	log.Println("cancel TO", resp.StatusCode)
 	// If we failed, error out
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 500 {
 		body, _ := ioutil.ReadAll(resp.Body)
-		return nil,
+		return false,
 			fmt.Errorf("CancelSteamTradeOffer: status code %d. message: %s", resp.StatusCode, body)
 	}
 
 	// Load the JSON result into Result
 	result := new(Result)
+
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(result)
 
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
-	return result, nil
+	if result.Success != 16 || result.TradeOfferID == 0 {
+		return false, nil
+	}
+
+	return true, nil
 
 }
 
