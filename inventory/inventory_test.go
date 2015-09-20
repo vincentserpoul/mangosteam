@@ -130,7 +130,7 @@ func TestGetUserWebInventoryURL(t *testing.T) {
 	baseSteamWebURL := "https://steam"
 
 	inventoryURL := getUserWebInventoryURL(baseSteamWebURL, steamID, appID)
-	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english"
+	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english&trading=1"
 
 	if inventoryURL != expectedInventoryURL {
 		t.Errorf("getUserWebInventoryURL(%d, %d) expected %s, got %s", steamID, appID,

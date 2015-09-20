@@ -36,7 +36,7 @@ func getUserWebInventoryURL(baseSteamWebURL string, steamID mangosteam.SteamID, 
 	contextID := mangosteam.ContextID(2)
 	userInventoryURL := baseSteamWebURL + "/profiles/" +
 		steamID.String() + "/inventory/json/" + appID.String() + "/" + contextID.String() +
-		"?l=english"
+		"?l=english&trading=1"
 
 	return userInventoryURL
 }
