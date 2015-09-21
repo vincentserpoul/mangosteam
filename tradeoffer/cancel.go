@@ -58,8 +58,9 @@ func CancelSteamTradeOffer(
 		return err
 	}
 
-	if result.Success != 16 && result.TradeOfferID == 0 {
-		return fmt.Errorf("CancelSteamTradeOffer: status code %d. message: %v", resp.StatusCode, result)
+	// 16 means the TO has been cancelled, 11 means it has already been cancelled in the past
+	if result.Success != 16 && result.Success != 11 && result.TradeOfferID == 0 {
+		return fmt.Errorf("CancelSteamTradeOffer: status code %d. message: %#v", resp.StatusCode, result)
 	}
 
 	return nil

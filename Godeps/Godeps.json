@@ -1,5 +1,5 @@
 {
 	"ImportPath": "github.com/vincentserpoul/mangosteam",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.5.1",
 	"Deps": []
 }

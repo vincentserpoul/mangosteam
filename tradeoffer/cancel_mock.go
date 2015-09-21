@@ -18,11 +18,20 @@ func cancelWeird500Success16SteamTradeOffer() string {
         `
 }
 
-func cancelWeird500MockSteamTradeOffer() string {
+func cancelWeird500Success11MockSteamTradeOffer() string {
 
 	return `
         {
             "success":11
+        }
+        `
+}
+
+func cancel500MockSteamTradeOffer() string {
+
+	return `
+        {
+            "test":11
         }
         `
 }
