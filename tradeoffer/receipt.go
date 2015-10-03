@@ -33,7 +33,8 @@ func GetItemsFromReceipt(
 	resp, err := client.Get(baseSteamWebURL + fmt.Sprintf(tradeOfferReceiptURL, tradeID))
 
 	if err != nil {
-		return emptyItems, err
+		return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v",
+			tradeID, err)
 	}
 
 	defer resp.Body.Close()
@@ -45,7 +46,8 @@ func GetItemsFromReceipt(
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return emptyItems, err
+		return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v",
+			tradeID, err)
 	}
 
 	var items []ReceiptItem
@@ -55,7 +57,8 @@ func GetItemsFromReceipt(
 		var receiptItem ReceiptItem
 		err = json.Unmarshal([]byte(itemJSON), &receiptItem)
 		if err != nil {
-			return emptyItems, err
+			return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v",
+				tradeID, err)
 		}
 
 		items = append(items, receiptItem)
