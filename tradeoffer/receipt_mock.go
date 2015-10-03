@@ -50,6 +50,6 @@ func getMockOKReceipt() string {
 
 func getMockKOReceipt() string {
 	return `
-                    oItem = {"id":"1234";
+                    oItem = {"id":"1234"dddd};
     `
 }

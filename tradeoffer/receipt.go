@@ -60,8 +60,8 @@ func GetItemsFromReceipt(
 		var receiptItem ReceiptItem
 		err = json.Unmarshal([]byte(itemJSON), &receiptItem)
 		if err != nil {
-			return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v",
-				tradeID, err)
+			return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v \n%s",
+				tradeID, itemJSON, err)
 		}
 
 		items = append(items, receiptItem)
@@ -76,10 +76,10 @@ func extractItemJSONFromBody(bodyS string) []string {
 	bodyLines := strings.Split(bodyS, "\n")
 
 	for _, line := range bodyLines {
-		lineContainingItem := strings.Index(line, `oItem = {"id":`)
-		if lineContainingItem != -1 {
-			itemJSON := line[lineContainingItem+8 : len(line)-1]
-
+		lineContainingItem := strings.Index(line, `oItem = {`)
+		endJSON := strings.LastIndex(line, `};`)
+		if lineContainingItem != -1 && endJSON != -1 {
+			itemJSON := line[lineContainingItem+8 : endJSON+1]
 			itemsJSON = append(itemsJSON, itemJSON)
 		}
 	}
