@@ -7,6 +7,9 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/vincentserpoul/mangosteam"
+	"github.com/vincentserpoul/mangosteam/inventory"
 )
 
 func TestGetItemsFromReceipt(t *testing.T) {
@@ -22,31 +25,31 @@ func TestGetItemsFromReceipt(t *testing.T) {
 
 	expectedItems := []ReceiptItem{
 		ReceiptItem{
-			ItemID:         uint64(1234),
-			OwnerSteamID:   uint64(12345678999),
-			ClassID:        uint64(1234567),
-			InstanceID:     uint64(0),
+			ItemID:         inventory.ItemID(1234),
+			OwnerSteamID:   mangosteam.SteamID(12345678999),
+			ClassID:        inventory.ClassID(1234567),
+			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "MOllusk 12 | 345",
 		},
 		ReceiptItem{
-			ItemID:         uint64(1235),
-			OwnerSteamID:   uint64(12345678999),
-			ClassID:        uint64(1234568),
-			InstanceID:     uint64(0),
+			ItemID:         inventory.ItemID(1235),
+			OwnerSteamID:   mangosteam.SteamID(12345678999),
+			ClassID:        inventory.ClassID(1234568),
+			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "AKlove 12 | 3",
 		},
 		ReceiptItem{
-			ItemID:         uint64(1236),
-			OwnerSteamID:   uint64(12345678999),
-			ClassID:        uint64(1234569),
-			InstanceID:     uint64(0),
+			ItemID:         inventory.ItemID(1236),
+			OwnerSteamID:   mangosteam.SteamID(12345678999),
+			ClassID:        inventory.ClassID(1234569),
+			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "TG43 | Elpiero",
 		},
 		ReceiptItem{
-			ItemID:         uint64(1237),
-			OwnerSteamID:   uint64(12345678999),
-			ClassID:        uint64(12345670),
-			InstanceID:     uint64(7855747),
+			ItemID:         inventory.ItemID(1237),
+			OwnerSteamID:   mangosteam.SteamID(12345678999),
+			ClassID:        inventory.ClassID(12345670),
+			InstanceID:     inventory.InstanceID(7855747),
 			MarketHashName: "Mallo | 441",
 		},
 	}

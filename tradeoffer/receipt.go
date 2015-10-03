@@ -6,15 +6,18 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/vincentserpoul/mangosteam"
+	"github.com/vincentserpoul/mangosteam/inventory"
 )
 
 // ReceiptItem represents an item in the receipt page
 type ReceiptItem struct {
-	ItemID         uint64 `json:"id,string"`
-	OwnerSteamID   uint64 `json:"owner,string"`
-	ClassID        uint64 `json:"classid,string"`
-	InstanceID     uint64 `json:"instanceid,string"`
-	MarketHashName string `json:"market_hash_name"`
+	ItemID         inventory.ItemID     `json:"id,string"`
+	OwnerSteamID   mangosteam.SteamID   `json:"owner,string"`
+	ClassID        inventory.ClassID    `json:"classid,string"`
+	InstanceID     inventory.InstanceID `json:"instanceid,string"`
+	MarketHashName string               `json:"market_hash_name"`
 }
 
 const (
