@@ -50,6 +50,6 @@ func getMockOKReceipt() string {
 
 func getMockKOReceipt() string {
 	return `
-                    oItem = "id":"1234","owner":"12345678999","classid":"1234567","instanceid":"0","icon_url":"-9a81dl","icon_url_large":"-9a81dlWMRkL5","icon_drag_url":"","name":"MOllusk 12 | 345","market_hash_name":"MOllusk 12 | 345","market_name":"MOllusk 12 | 345","name_color":"D2D2D2","background_color":"","type":"Mesh","tradable":1,"marketable":1,"commodity":0,"market_tradable_restriction":"7","descriptions":[{"type":"html","value":"dfdsfsdf"},{"type":"html","value":" "},{"type":"html","value":"fsefesf"},{"type":"html","value":" "},{"type":"html","value":"Collection Bank","color":"34324324","app_data":{"def_index":"432432","is_itemset_name":1}},{"type":"html","value":" ","app_data":{"def_index":"3432432"}},{"type":"html","value":" "}],"owner_descriptions":"","tags":[{"internal_name":"fsefes","name":"PM","category":"Type","category_name":"Type"},{"internal_name":"efsefff","name":"esfs","category":"esfsef","category_name":"seffesf"},{"internal_name":"sefgggse","name":"efse","category":"fesf","category_name":"esfsef"},{"internal_name":"fsegge","name":"efsef","category":"fsefes","category_name":"fesfse"},{"internal_name":"fesfgggsgses","name":"esfesf","category":"34324","color":"b0c3d9","category_name":"3243242"}],"pos":1,"appid":730,"contextid":2};
+                    oItem = {"id":"1234";
     `
 }

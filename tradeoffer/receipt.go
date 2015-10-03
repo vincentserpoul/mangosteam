@@ -76,7 +76,7 @@ func extractItemJSONFromBody(bodyS string) []string {
 	bodyLines := strings.Split(bodyS, "\n")
 
 	for _, line := range bodyLines {
-		lineContainingItem := strings.Index(line, "oItem = ")
+		lineContainingItem := strings.Index(line, `oItem = {"id":`)
 		if lineContainingItem != -1 {
 			itemJSON := line[lineContainingItem+8 : len(line)-1]
 
