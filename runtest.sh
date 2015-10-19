@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for pkg in auth inventory tradeoffer user;do
+for pkg in auth inventory market tradeoffer user;do
 	cd $pkg
 	go test
 	gocov test | gocov report
