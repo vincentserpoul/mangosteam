@@ -139,7 +139,7 @@ func TestMockOKGetRSAKey(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginGetrsakey())
+		fmt.Fprintf(w, GetMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
 
@@ -190,7 +190,7 @@ func TestMockKOGetRSAKey(t *testing.T) {
 }
 
 func TestGetMockOKLoginGetrsakey(t *testing.T) {
-	str := getMockOKLoginGetrsakey()
+	str := GetMockOKLoginGetrsakey()
 
 	if len(str) == 0 {
 		t.Errorf("MockOKLoginGetrsakey is not working anymore")
