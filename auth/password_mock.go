@@ -1,6 +1,7 @@
 package auth
 
-func getMockOKLoginGetrsakey() string {
+// GetMockOKLoginGetrsakey ...
+func GetMockOKLoginGetrsakey() string {
 	return `
 		{
 		  "success": true,
