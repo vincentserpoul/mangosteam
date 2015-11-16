@@ -12,7 +12,6 @@ func TestDoLogin(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockKOLoginDologin())
 	}))
@@ -26,7 +25,7 @@ func TestDoLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 
-	_, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -46,10 +45,8 @@ func TestDoLogin(t *testing.T) {
 
 func TestDoOKLogin(t *testing.T) {
 
-	expectedSessionID := "1234"
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: expectedSessionID})
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockOKLoginDologin())
 	}))
@@ -63,7 +60,7 @@ func TestDoOKLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 
-	sessionID, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -77,10 +74,6 @@ func TestDoOKLogin(t *testing.T) {
 	if err != nil {
 		t.Errorf("Dologin returns error %v when login successful", err)
 	}
-	if sessionID != expectedSessionID {
-		t.Errorf("Dologin returns %s as sessionID whereas it should return %s",
-			sessionID, expectedSessionID)
-	}
 
 	return
 }
@@ -89,7 +82,6 @@ func TestHttpNotOKLogin(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: "1234"})
 		w.WriteHeader(http.StatusNotFound)
 	}))
 	defer ts.Close()
@@ -102,7 +94,7 @@ func TestHttpNotOKLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 
-	_, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -124,7 +116,6 @@ func TestKODoLoginForm(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
 		// An error is returned if caused by client policy (such as CheckRedirect),
 		// or if there was an HTTP protocol error. A non-2xx response doesn't cause an error.
@@ -141,7 +132,7 @@ func TestKODoLoginForm(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
-	_, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -163,7 +154,6 @@ func TestEmailauthNeeded(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockEmailauthNeeded())
 	}))
@@ -177,7 +167,7 @@ func TestEmailauthNeeded(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 
-	_, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -199,7 +189,6 @@ func TestRespBody(t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		http.SetCookie(w, &http.Cookie{Name: "sessionid", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockRespBody())
 	}))
@@ -213,7 +202,7 @@ func TestRespBody(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 
-	_, err := DoLogin(
+	err := DoLogin(
 		ts.URL,
 		&client,
 		username,
@@ -226,40 +215,6 @@ func TestRespBody(t *testing.T) {
 
 	if err == nil {
 		t.Errorf("loginBody returns no error")
-	}
-
-	return
-}
-
-func TestDoLoginNoSession(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginDologin())
-	}))
-	defer ts.Close()
-
-	client := http.Client{}
-	username := "mangosteam"
-	encryptedPassword := "123"
-	rsatimestamp := "123"
-	emailauthKeyedIn := ""
-	captchaGID := ""
-	captchaKeyedIn := ""
-
-	_, err := DoLogin(
-		ts.URL,
-		&client,
-		username,
-		encryptedPassword,
-		rsatimestamp,
-		emailauthKeyedIn,
-		captchaGID,
-		captchaKeyedIn,
-	)
-
-	if err == nil {
-		t.Errorf("Dologin returns no error whereas no sessionID was provided")
 	}
 
 	return
