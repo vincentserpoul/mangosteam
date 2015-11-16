@@ -30,8 +30,8 @@ func DoLogin(
 	emailauthKeyedIn string,
 	captchaGID string,
 	captchaKeyedIn string,
-) error {
-
+) (string, error) {
+	var sessionID string
 	baseURL, _ := url.Parse(baseSteamWebURL + DoLoginURL)
 
 	// default value set to -1
@@ -60,12 +60,23 @@ func DoLogin(
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("auth DoLogin(): %v", err)
+		return sessionID, fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
+		return sessionID, fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
 			resp.Status, username)
+	}
+
+	for _, cookie := range resp.Cookies() {
+		if cookie.Name == "sessionid" && cookie.Value != "" {
+			sessionID = cookie.Value
+		}
+	}
+
+	if sessionID == "" {
+		return sessionID,
+			fmt.Errorf("auth DoLogin(): no sessionid available in cookie for %s", username)
 	}
 
 	loginBody := new(doLogInResponse)
@@ -73,19 +84,19 @@ func DoLogin(
 	err = decoder.Decode(loginBody)
 
 	if err != nil {
-		return fmt.Errorf("auth DoLogin(): %v", err)
+		return sessionID, fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
 	if loginBody.EmailauthNeeded {
-		return fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
+		return sessionID, fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
 			" code sent via email", username)
 	}
 
 	if !loginBody.Success {
-		return fmt.Errorf("auth DoLogin(): unknown error for %s", username)
+		return sessionID, fmt.Errorf("auth DoLogin(): unknown error for %s", username)
 	}
 
-	return nil
+	return sessionID, nil
 }
 
 // IsLoggedIn checks if a user is logged in or not
