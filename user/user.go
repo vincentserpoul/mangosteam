@@ -41,7 +41,7 @@ func (user *User) Login(baseSteamWebURL string) error {
 		return fmt.Errorf("user Login(): %v", err)
 	}
 
-	err = auth.DoLogin(
+	user.LastSessionID, err = auth.DoLogin(
 		baseSteamWebURL,
 		client,
 		user.Username,
