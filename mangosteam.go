@@ -44,27 +44,33 @@ func (steamID SteamID) GetAccountID() string {
 // GetSteamIDFromString returns the steamID uint64 according to steamID in string
 func GetSteamIDFromString(strSteamID string) (SteamID, error) {
 	var steamID SteamID
+
 	uint64SteamID, err := strconv.ParseUint(strSteamID, 10, 64)
+	if err != nil {
+		return steamID, err
+	}
+	if uint64SteamID == 0 {
+		return steamID, fmt.Errorf("SteamID can't be 0")
+	}
 
 	steamID = SteamID(uint64SteamID)
-
-	if err != nil {
-		return 0, err
-	}
 
 	return steamID, nil
 }
 
 // GetAppIDFromString returns the AppID uint32 according to steamID in string
 func GetAppIDFromString(strAppID string) (AppID, error) {
+	var appID AppID
 
 	uint64AppID, err := strconv.ParseUint(strAppID, 10, 64)
-
-	AppID := AppID(uint64AppID)
-
 	if err != nil {
-		return 0, err
+		return appID, err
+	}
+	if uint64AppID == 0 {
+		return appID, fmt.Errorf("AppID can't be 0")
 	}
 
-	return AppID, nil
+	appID = AppID(uint64AppID)
+
+	return appID, nil
 }
