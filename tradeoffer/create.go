@@ -89,7 +89,7 @@ func getCreateSteamTradeOfferRequest(
 	message string,
 ) (*http.Request, error) {
 	if (baseSteamWebURL == "") || (sessionID == "") || (otherSteamID.String() == "") || (accessToken == "") {
-		return nil, fmt.Errorf("getCreateSteamTradeOfferRequest: Empty baseSteambURL or sessionID or otherSteamID or accessToken")
+		return nil, fmt.Errorf("getCreateSteamTradeOfferRequest: Empty baseSteamURL or sessionID or otherSteamID or accessToken")
 	}
 	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
 

@@ -74,7 +74,7 @@ func getCancelSteamTradeOfferRequest(
 	steamTradeOfferID SteamTradeOfferID,
 ) (*http.Request, error) {
 	if (baseSteamWebURL == "") || (sessionID == "") || (creatorSteamID.String() == "") || (steamTradeOfferID.String() == "") {
-		return nil, fmt.Errorf("getCancelSteamTradeOfferRequest: Empty baseSteambURL or sessionID or creatorSteamID or steamTradeOfferID")
+		return nil, fmt.Errorf("getCancelSteamTradeOfferRequest: Empty baseSteamURL or sessionID or creatorSteamID or steamTradeOfferID")
 	}
 	baseURL, _ := url.Parse(baseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
 
