@@ -21,7 +21,6 @@ type RSAKey struct {
 	PublicKeyModulus  string `json:"publickey_mod"`
 	PublicKeyExponent string `json:"publickey_exp"`
 	Timestamp         string `json:"timestamp"`
-	SteamID           string `json:"steamid"`
 }
 
 // GetRSAKeyURL is the URL used to get the RSA Key
@@ -64,7 +63,6 @@ func extractRSAKeyFromJSON(JSONBytes []byte) (*RSAKey, error) {
 	}
 	if key.PublicKeyExponent == "" ||
 		key.PublicKeyModulus == "" ||
-		key.SteamID == "" ||
 		key.Timestamp == "" {
 		return nil, fmt.Errorf(
 			"websteam extractRSAKeyFromJSON: incomplete RSAKey unmarshalled: %+v", key)
@@ -89,8 +87,7 @@ func EncryptPassword(password string, rsaKey *RSAKey) (string, error) {
 	pubkeyExpInt, err := strconv.ParseInt(rsaKey.PublicKeyExponent, 16, 64)
 
 	if err != nil {
-		return "", fmt.Errorf("mangosteam EncryptPassword(steamID: %v): %v",
-			rsaKey.SteamID, err)
+		return "", fmt.Errorf("mangosteam EncryptPassword(): %v", err)
 	}
 
 	// convert the hex string to a big int (we can't use ParseInt)
@@ -105,8 +102,7 @@ func EncryptPassword(password string, rsaKey *RSAKey) (string, error) {
 	encryptedPass, err := rsa.EncryptPKCS1v15(rand.Reader, &realKey, []byte(password))
 
 	if err != nil {
-		return "", fmt.Errorf("mangosteam EncryptPassword(steamID: %v): %v",
-			rsaKey.SteamID, err)
+		return "", fmt.Errorf("mangosteam EncryptPassword(): %v", err)
 	}
 
 	return base64.StdEncoding.EncodeToString(encryptedPass), nil

@@ -10,10 +10,9 @@ import (
 
 func TestEncryptPasswordEmptyPassword(t *testing.T) {
 	testRSAKey := &RSAKey{
-		"123456789",
-		"123456789",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789",
+		PublicKeyExponent: "123456789",
+		Timestamp:         "123456789",
 	}
 	_, err := EncryptPassword("", testRSAKey)
 
@@ -33,10 +32,9 @@ func TestEncryptPasswordNilRSAKey(t *testing.T) {
 
 func TestEncryptPasswordExpTooBig(t *testing.T) {
 	testRSAKey := &RSAKey{
-		"123456789123456789123456789123456789123456789",
-		"123456789",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789123456789123456789123456789123456789",
+		PublicKeyExponent: "123456789",
+		Timestamp:         "123456789",
 	}
 	password := "testpassword"
 	_, err := EncryptPassword(password, testRSAKey)
@@ -48,10 +46,9 @@ func TestEncryptPasswordExpTooBig(t *testing.T) {
 
 func TestEncryptPasswordBadMod(t *testing.T) {
 	testRSAKey := &RSAKey{
-		"123456789123456789123456789123456789",
-		"1234",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789123456789123456789123456789",
+		PublicKeyExponent: "1234",
+		Timestamp:         "123456789",
 	}
 	password := "testpassword"
 	_, err := EncryptPassword(password, testRSAKey)
@@ -63,10 +60,9 @@ func TestEncryptPasswordBadMod(t *testing.T) {
 
 func TestEncryptPasswordExpNotInt(t *testing.T) {
 	testRSAKey := &RSAKey{
-		"123456789123456789123456789123456789",
-		"12FG",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789123456789123456789123456789",
+		PublicKeyExponent: "12FG",
+		Timestamp:         "123456789",
 	}
 	password := "testpassword"
 	_, err := EncryptPassword(password, testRSAKey)
@@ -78,10 +74,9 @@ func TestEncryptPasswordExpNotInt(t *testing.T) {
 
 func TestEncryptPassword(t *testing.T) {
 	testRSAKey := &RSAKey{
-		"123456789123456789123456789123456789123456789",
-		"1234",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789123456789123456789123456789123456789",
+		PublicKeyExponent: "1234",
+		Timestamp:         "123456789",
 	}
 	password := "testpassword"
 
@@ -94,10 +89,9 @@ func TestEncryptPassword(t *testing.T) {
 
 func TestExtractRSAKeyFromJSON(t *testing.T) {
 	wantedRSAKey := &RSAKey{
-		"123456789123456789123456789123456789123456789",
-		"1234",
-		"123456789",
-		"123456789",
+		PublicKeyModulus:  "123456789123456789123456789123456789123456789",
+		PublicKeyExponent: "1234",
+		Timestamp:         "123456789",
 	}
 
 	testJSONString := "{\"publickey_mod\":\"123456789123456789123456789123456789123456789\",\"publickey_exp\":\"1234\",\"timestamp\":\"123456789\",\"steamid\":\"123456789\"}"
@@ -113,7 +107,7 @@ func TestExtractRSAKeyFromJSON(t *testing.T) {
 
 func TestExtractRSAKeyFromJSONMissingField(t *testing.T) {
 
-	testJSONString := "{\"publickey_exp\": \"1234\", \"timestamp\": \"123456789\", \"steamid\":\"123456789\"}"
+	testJSONString := "{\"publickey_exp\": \"1234\", \"timestamp\": \"123456789\"}"
 
 	_, err := extractRSAKeyFromJSON([]byte(testJSONString))
 
@@ -124,7 +118,7 @@ func TestExtractRSAKeyFromJSONMissingField(t *testing.T) {
 
 func TestExtractRSAKeyFromJSONBadJSON(t *testing.T) {
 
-	testJSONString := "{publickey_exp\": \"1234\", \"timestamp\": \"123456789\", \"steamid\":\"123456789\"}"
+	testJSONString := "{publickey_exp\": \"1234\", \"timestamp\": \"123456789\"}"
 
 	_, err := extractRSAKeyFromJSON([]byte(testJSONString))
 
@@ -151,7 +145,6 @@ func TestMockOKGetRSAKey(t *testing.T) {
 
 	if key.PublicKeyExponent == "" ||
 		key.PublicKeyModulus == "" ||
-		key.SteamID == "" ||
 		key.Timestamp == "" {
 		t.Errorf("GetRSAkey from mocks is not returning a complete key but %v instead", key)
 	}
