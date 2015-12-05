@@ -36,12 +36,16 @@ type Result struct {
 func CreateSteamTradeOffer(
 	baseSteamWebURL string,
 	client *http.Client,
-	sessionID string,
 	otherSteamID mangosteam.SteamID,
 	accessToken string,
 	myItems, theirItems []*Asset,
 	message string,
 ) (*Result, error) {
+
+	sessionID, err := extractSessionIDFromClient(baseSteamWebURL, client)
+	if err != nil {
+		return nil, err
+	}
 
 	req, err := getCreateSteamTradeOfferRequest(
 		baseSteamWebURL,
@@ -192,4 +196,20 @@ func getBodyTradeOffer(
 	form.Add("json_tradeoffer", string(tradeOfferJSON))
 
 	return form.Encode()
+}
+
+// extractSessionIDFromClient will return the sessionid cookie value and an error if none is present
+func extractSessionIDFromClient(baseURL string, client *http.Client) (string, error) {
+	if client.Jar == nil {
+		return "", fmt.Errorf("tradeoffer extractSessionIDFromClient(%s): missing cookie jar", baseURL)
+	}
+
+	u, _ := url.Parse(baseURL)
+	for _, cookie := range client.Jar.Cookies(u) {
+		if cookie.Name == "sessionid" {
+			return cookie.Value, nil
+		}
+	}
+
+	return "", fmt.Errorf("tradeoffer extractSessionIDFromClient(%s): missing sessionid cookie", baseURL)
 }

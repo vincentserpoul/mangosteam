@@ -30,7 +30,15 @@ func DoLogin(
 	emailauthKeyedIn string,
 	captchaGID string,
 	captchaKeyedIn string,
-) error {
+) (string, string, string, error) {
+
+	var sessionid, steamLogin, steamLoginSecure string
+
+	sessionid, err := getNewSessionID(baseSteamWebURL)
+	if err != nil {
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
+	}
+
 	baseURL, _ := url.Parse(baseSteamWebURL + DoLoginURL)
 
 	// default value set to -1
@@ -59,11 +67,12 @@ func DoLogin(
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("auth DoLogin(): %v", err)
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
 			resp.Status, username)
 	}
 
@@ -72,28 +81,47 @@ func DoLogin(
 	err = decoder.Decode(loginBody)
 
 	if err != nil {
-		return fmt.Errorf("auth DoLogin(): %v", err)
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
 	if loginBody.EmailauthNeeded {
-		return fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
 			" code sent via email", username)
 	}
 
 	if !loginBody.Success {
-		return fmt.Errorf("auth DoLogin(): unknown error for %s", username)
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): unknown error for %s", username)
 	}
 
-	return nil
+	for _, cookie := range resp.Cookies() {
+
+		if cookie.Name == "steamLogin" {
+			steamLogin = cookie.Value
+		}
+		if cookie.Name == "steamLoginSecure" {
+			steamLoginSecure = cookie.Value
+		}
+	}
+
+	if steamLogin == "" {
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamLogin cookie is empty")
+	}
+
+	if steamLoginSecure == "" {
+		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamLoginSecure cookie is empty")
+	}
+
+	return sessionid, steamLogin, steamLoginSecure, nil
 }
 
 // IsLoggedIn checks if a user is logged in or not
 func IsLoggedIn(baseSteamWebURL string, client *http.Client) (bool, error) {
 	resp, err := client.Get(baseSteamWebURL + IsLoggedInURL)
-
 	if err != nil {
 		return false, fmt.Errorf("auth IsLoggedin(): %v", err)
 	}
+	defer resp.Body.Close()
+
 	if resp.StatusCode == http.StatusOK {
 		return true, nil
 	}

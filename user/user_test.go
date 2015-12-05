@@ -23,7 +23,18 @@ func TestLoginErrLoggedIn(t *testing.T) {
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
 
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := User{
+		SteamID:          mangosteam.SteamID(123456789),
+		SteamMachineAuth: "1",
+		SteamLogin:       "1",
+		SteamLoginSecure: "1",
+		Username:         "1",
+		Password:         "1",
+		APIKey:           "1",
+		Email:            "1",
+		LastSessionID:    "1",
+	}
+
 	err := user.Login(ts.URL)
 	if err == nil {
 		t.Errorf("Dologin returns no error when login failed, %v", err)
@@ -48,7 +59,17 @@ func TestTimeOutLoginGetRSAKey(t *testing.T) {
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
 
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := User{
+		SteamID:          mangosteam.SteamID(123456789),
+		SteamMachineAuth: "1",
+		SteamLogin:       "1",
+		SteamLoginSecure: "1",
+		Username:         "1",
+		Password:         "1",
+		APIKey:           "1",
+		Email:            "1",
+		LastSessionID:    "1",
+	}
 	err := user.Login(ts.URL)
 	if err == nil {
 		t.Errorf("Dologin returns no error when login failed, %v", err)
@@ -95,7 +116,18 @@ func TestLoginEncryptPasswordFail(t *testing.T) {
 	ts := httptest.NewServer(testMux)
 	defer ts.Close()
 
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "", "1", "1", "1"}
+	user := User{
+		SteamID:          mangosteam.SteamID(123456789),
+		SteamMachineAuth: "1",
+		SteamLogin:       "1",
+		SteamLoginSecure: "1",
+		Username:         "emptypass",
+		Password:         "",
+		APIKey:           "1",
+		Email:            "1",
+		LastSessionID:    "1",
+	}
+
 	err := user.Login(ts.URL)
 	if err == nil {
 		t.Errorf("Dologin returns no error when empty password, %v", err)
@@ -139,4 +171,29 @@ func TestGetMockKOLoginGetrsakey(t *testing.T) {
 	if len(s) == 0 {
 		t.Errorf("getMockKOLoginGetrsakey has an error, please check your mock")
 	}
+}
+
+func TestActualSteamLogin(t *testing.T) {
+
+	user := User{
+		SteamID:       mangosteam.SteamID(76561198264159435),
+		Username:      "github_mangosteam",
+		Password:      "mangosteam_test",
+		LastSessionID: "1",
+	}
+
+	err := user.Login(mangosteam.BaseSteamWebURL)
+	if err != nil {
+		t.Errorf("Login to steam with %s account failed with error %v", user.Username, err)
+	}
+
+	client := user.NewWebSteamClient(mangosteam.BaseSteamWebURL)
+	isLoggedIn, err := auth.IsLoggedIn(mangosteam.BaseSteamWebURL, client)
+	if err != nil {
+		t.Errorf("Login to steam with %s account failed with error %v", user.Username, err)
+	}
+	if !isLoggedIn {
+		t.Errorf("Login to steam with %s account did not work", user.Username)
+	}
+
 }

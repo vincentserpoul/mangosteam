@@ -10,8 +10,22 @@ import (
 	"github.com/vincentserpoul/mangosteam"
 )
 
+func getTestUser() User {
+	return User{
+		SteamID:          mangosteam.SteamID(123456789),
+		SteamMachineAuth: "1",
+		SteamLogin:       "1",
+		SteamLoginSecure: "1",
+		Username:         "1",
+		Password:         "1",
+		APIKey:           "1",
+		Email:            "1",
+		LastSessionID:    "1",
+	}
+}
+
 func TestOKGetAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockExistingAPIKeyPage())
@@ -25,7 +39,7 @@ func TestOKGetAPIKey(t *testing.T) {
 }
 
 func TestAccessDeniedGetAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockAccessDeniedgetAPIKey())
@@ -39,7 +53,7 @@ func TestAccessDeniedGetAPIKey(t *testing.T) {
 }
 
 func TestOKregisterAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockOKLoginDologin())
@@ -52,7 +66,7 @@ func TestOKregisterAPIKey(t *testing.T) {
 	return
 }
 func TestKOClient(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -70,7 +84,7 @@ func TestKOClient(t *testing.T) {
 	return
 }
 func TestEmptyAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockEmptyAPIKeyPage())
@@ -84,7 +98,7 @@ func TestEmptyAPIKey(t *testing.T) {
 }
 
 func TestOKRevokeAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockOKLoginDologin())
@@ -98,7 +112,7 @@ func TestOKRevokeAPIKey(t *testing.T) {
 }
 
 func TestKORevokeAPIKey(t *testing.T) {
-	user := User{mangosteam.SteamID(123456789), "1", "1", "1", "1", "1", "1", "1", "1"}
+	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(200 * time.Millisecond)

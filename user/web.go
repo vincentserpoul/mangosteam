@@ -10,27 +10,49 @@ import (
 // to interact with web steam
 func (user *User) NewWebSteamClient(baseSteamWebURL string) *http.Client {
 	client := &http.Client{}
-	client.Jar, _ = cookiejar.New(new(cookiejar.Options))
-	base, _ := url.Parse(baseSteamWebURL)
+	client.Jar, _ = cookiejar.New(nil)
 
-	client.Jar.SetCookies(base, []*http.Cookie{
-		&http.Cookie{
-			Name:  "steamMachineAuth" + user.SteamID.String(),
-			Value: user.SteamMachineAuth,
-		},
-		&http.Cookie{
-			Name:  "steamLogin",
-			Value: user.SteamLogin,
-		},
-		&http.Cookie{
-			Name:  "steamLoginSecure",
-			Value: user.SteamLoginSecure,
-		},
-		&http.Cookie{
-			Name:  "sessionid",
-			Value: user.LastSessionID,
-		},
-	})
+	steamURL, _ := url.Parse(baseSteamWebURL)
+
+	var cookiesToBeSet []*http.Cookie
+
+	if user.SteamMachineAuth != "" {
+		cookiesToBeSet = append(cookiesToBeSet,
+			&http.Cookie{
+				Name:  "steamMachineAuth" + user.SteamID.String(),
+				Value: user.SteamMachineAuth,
+			},
+		)
+	}
+
+	if user.SteamLogin != "" {
+		cookiesToBeSet = append(cookiesToBeSet,
+			&http.Cookie{
+				Name:  "steamLogin",
+				Value: user.SteamLogin,
+			},
+		)
+	}
+
+	if user.SteamLoginSecure != "" {
+		cookiesToBeSet = append(cookiesToBeSet,
+			&http.Cookie{
+				Name:  "steamLoginSecure",
+				Value: user.SteamLoginSecure,
+			},
+		)
+	}
+
+	if user.LastSessionID != "" {
+		cookiesToBeSet = append(cookiesToBeSet,
+			&http.Cookie{
+				Name:  "sessionid",
+				Value: user.LastSessionID,
+			},
+		)
+	}
+
+	client.Jar.SetCookies(steamURL, cookiesToBeSet)
 
 	return client
 }

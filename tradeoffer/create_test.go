@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -24,8 +26,6 @@ func TestSteamTradeOfferIDString(t *testing.T) {
 }
 
 func TestEmptyCreateSteamTradeOffer(t *testing.T) {
-	//baseSteamWebURL := `http://mockymocky.com`
-	sessionID := ""
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
 	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
@@ -39,10 +39,10 @@ func TestEmptyCreateSteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
 	_, err := CreateSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		otherSteamID,
 		accessToken,
 		myItems, theirItems,
@@ -55,8 +55,7 @@ func TestEmptyCreateSteamTradeOffer(t *testing.T) {
 }
 
 func TestOKCreateSteamTradeOffer(t *testing.T) {
-	//baseSteamWebURL := `http://mockymocky.com`
-	sessionID := "1234abcde"
+
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
 	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
@@ -69,11 +68,15 @@ func TestOKCreateSteamTradeOffer(t *testing.T) {
 		fmt.Fprintf(w, createMockSteamTradeOffer())
 	}))
 	defer ts.Close()
+
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+
 	_, err := CreateSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		otherSteamID,
 		accessToken,
 		myItems, theirItems,
@@ -86,7 +89,6 @@ func TestOKCreateSteamTradeOffer(t *testing.T) {
 }
 
 func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
-	sessionID := "1234abcde"
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
 	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
@@ -99,11 +101,15 @@ func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
 		fmt.Fprintf(w, createMockSteamTradeOffer())
 	}))
 	defer ts.Close()
+
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+
 	_, err := CreateSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		otherSteamID,
 		accessToken,
 		myItems, theirItems,
@@ -116,8 +122,6 @@ func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
 }
 
 func TestTimeOutCreateSteamTradeOffer(t *testing.T) {
-	//baseSteamWebURL := `http://mockymocky.com`
-	sessionID := "1234abcde"
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
 	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
@@ -131,11 +135,15 @@ func TestTimeOutCreateSteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	ts.Config.WriteTimeout = 20 * time.Millisecond
+
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+
 	_, err := CreateSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		otherSteamID,
 		accessToken,
 		myItems, theirItems,
@@ -146,9 +154,9 @@ func TestTimeOutCreateSteamTradeOffer(t *testing.T) {
 		return
 	}
 }
+
 func TestBodyErrorCreateSteamTradeOffer(t *testing.T) {
-	//baseSteamWebURL := `http://mockymocky.com`
-	sessionID := "1234abcde"
+
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
 	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
@@ -160,11 +168,46 @@ func TestBodyErrorCreateSteamTradeOffer(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer ts.Close()
+
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+
 	_, err := CreateSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
+		otherSteamID,
+		accessToken,
+		myItems, theirItems,
+		message,
+	)
+	if err == nil {
+		t.Errorf("CreateSteamTradeOffer validate where it shouldn't: %v", err)
+		return
+	}
+}
+
+func TestMissingSessionIDCreateSteamTradeOffer(t *testing.T) {
+
+	otherSteamID := mangosteam.SteamID(1234567890)
+	accessToken := `Er_owt`
+	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
+	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	message := `Mock me over and over!`
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, createMockSteamTradeOffer())
+	}))
+	defer ts.Close()
+
+	client := http.Client{}
+
+	_, err := CreateSteamTradeOffer(
+		ts.URL,
+		&client,
 		otherSteamID,
 		accessToken,
 		myItems, theirItems,
@@ -239,4 +282,30 @@ func TestGetCreateSteamTradeOfferRequest(t *testing.T) {
 		return
 	}
 
+}
+
+func TestExtractSessionIDFromClient(t *testing.T) {
+	baseURL := "http://mock.com"
+	client := &http.Client{}
+
+	_, errMissingJar := extractSessionIDFromClient(baseURL, client)
+	if errMissingJar == nil {
+		t.Errorf("ExtractSessionIDFromClient with a missing cookiejar doesn't return an error whereas it should")
+	}
+
+	client.Jar, _ = cookiejar.New(nil)
+	_, errMissingCookie := extractSessionIDFromClient(baseURL, client)
+	if errMissingCookie == nil {
+		t.Errorf("ExtractSessionIDFromClient with a missing sessionid doesn't return an error whereas it should")
+	}
+
+	baseURLu, _ := url.Parse(baseURL)
+	client.Jar.SetCookies(baseURLu, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234"}})
+	sessionid, err := extractSessionIDFromClient(baseURL, client)
+	if err != nil {
+		t.Errorf("ExtractSessionIDFromClient expected `1234` but got an error %v instead", err)
+	}
+	if sessionid != "1234" {
+		t.Errorf("ExtractSessionIDFromClient expected `1234` but got `%s`", sessionid)
+	}
 }

@@ -13,20 +13,24 @@ import (
 func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 
 	client := user.NewWebSteamClient(baseSteamWebURL)
+
 	resp, err := client.Get(baseSteamWebURL + "/dev/apikey")
+	if err != nil {
+		return "", fmt.Errorf("steamuser GetAPIKey(): %v error %v", user.Username, err)
+	}
 	defer resp.Body.Close()
 
 	var APIKey string
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("steam user GetAPIKey(): %v error %v", user.Username, err)
+		return "", fmt.Errorf("steamuser GetAPIKey(): %v error %v", user.Username, err)
 	}
 
 	access := doc.Find("#mainContents h2").Text()
 
 	if access == "Access Denied" {
-		return "", fmt.Errorf("steam user GetAPIKey(): error Access Denied")
+		return "", fmt.Errorf("steamuser GetAPIKey(): error Access Denied")
 	}
 
 	title := doc.Find("div#bodyContents_ex h2").Text()
@@ -43,7 +47,7 @@ func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 		if APIKey == "" {
 			err = user.registerAPIKey(baseSteamWebURL)
 			if err != nil {
-				return "", fmt.Errorf("steam user GetAPIKey(): %v error %v", user.Username, err)
+				return "", fmt.Errorf("steamuser GetAPIKey(): %v error %v", user.Username, err)
 			}
 			return "", fmt.Errorf("Empty or APIKey  lenght not 32 , for user %v", user.Username) // JJS_TEST
 			// return user.getAPIKey(baseSteamWebURL) JJS_TEST Impossible avec la récursion
@@ -59,7 +63,11 @@ func (user *User) getAPIKey(baseSteamWebURL string) (string, error) {
 func (user *User) registerAPIKey(baseSteamWebURL string) error {
 
 	client := user.NewWebSteamClient(baseSteamWebURL)
-	baseURL, _ := url.Parse(baseSteamWebURL + "/dev/registerkey")
+
+	baseURL, err := url.Parse(baseSteamWebURL + "/dev/registerkey")
+	if err != nil {
+		return fmt.Errorf("steamuser registerAPIKey(): %v error %v", user.Username, err)
+	}
 
 	form := url.Values{}
 	form.Add("domain", "localhost")
@@ -69,13 +77,13 @@ func (user *User) registerAPIKey(baseSteamWebURL string) error {
 
 	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(form.Encode()))
 	if err != nil {
-		return fmt.Errorf("steam user registerAPIKey(): %v error %v", user.Username, err)
+		return fmt.Errorf("steamuser registerAPIKey(): %v error %v", user.Username, err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("steam user registerAPIKey(): %v error %v", user.Username, err)
+		return fmt.Errorf("steamuser registerAPIKey(): %v error %v", user.Username, err)
 	}
 
 	defer resp.Body.Close()
@@ -87,7 +95,11 @@ func (user *User) registerAPIKey(baseSteamWebURL string) error {
 func (user *User) revokeAPIKey(baseSteamWebURL string) error {
 
 	client := user.NewWebSteamClient(baseSteamWebURL)
-	baseURL, _ := url.Parse(baseSteamWebURL + "/dev/revokekey")
+
+	baseURL, err := url.Parse(baseSteamWebURL + "/dev/revokekey")
+	if err != nil {
+		return fmt.Errorf("steamuser revokeAPIKey(): %v error %v", user.Username, err)
+	}
 
 	form := url.Values{}
 	form.Add("domain", "localhost")
@@ -96,13 +108,13 @@ func (user *User) revokeAPIKey(baseSteamWebURL string) error {
 
 	req, err := http.NewRequest("POST", baseURL.String(), strings.NewReader(form.Encode()))
 	if err != nil {
-		return fmt.Errorf("steam user revokeAPIKey(): %v error %v", user.Username, err)
+		return fmt.Errorf("steamuser revokeAPIKey(): %v error %v", user.Username, err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return fmt.Errorf("steam user revokeAPIKey(): %v error %v", user.Username, err)
+		return fmt.Errorf("steamuser revokeAPIKey(): %v error %v", user.Username, err)
 	}
 
 	defer resp.Body.Close()

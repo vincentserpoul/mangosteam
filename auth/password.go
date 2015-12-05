@@ -33,13 +33,13 @@ func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
 		"username": username,
 	}).Debug("calling ", baseSteamWebURL+GetRSAKeyURL)
 	// Est-ce testable voir solution login_test.go
-	resp, err := http.PostForm(baseSteamWebURL+GetRSAKeyURL,
-		url.Values{"username": {username}})
-
+	resp, err := http.PostForm(
+		baseSteamWebURL+GetRSAKeyURL,
+		url.Values{"username": {username}},
+	)
 	if err != nil {
 		return nil, fmt.Errorf("mangosteam GetRSAKey(%s): %v", username, err)
 	}
-
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
