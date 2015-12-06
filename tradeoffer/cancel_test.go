@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -13,7 +15,6 @@ import (
 
 func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(123456)
 
@@ -24,11 +25,13 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -41,7 +44,6 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 
 func TestEmptyCancelSteamTradeOfferRequest(t *testing.T) {
 
-	sessionID := ""
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -56,7 +58,6 @@ func TestEmptyCancelSteamTradeOfferRequest(t *testing.T) {
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -69,7 +70,6 @@ func TestEmptyCancelSteamTradeOfferRequest(t *testing.T) {
 
 func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -81,11 +81,13 @@ func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
 	defer ts.Close()
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -98,7 +100,6 @@ func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
 
 func TestNotFoundSteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -108,11 +109,13 @@ func TestNotFoundSteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -125,7 +128,6 @@ func TestNotFoundSteamTradeOffer(t *testing.T) {
 
 func TestNoBodySteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -135,11 +137,13 @@ func TestNoBodySteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -152,7 +156,6 @@ func TestNoBodySteamTradeOffer(t *testing.T) {
 
 func TestWeird500Success11SteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -163,11 +166,13 @@ func TestWeird500Success11SteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -180,7 +185,6 @@ func TestWeird500Success11SteamTradeOffer(t *testing.T) {
 
 func TestWeird500Success16SteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -191,11 +195,13 @@ func TestWeird500Success16SteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)
@@ -208,7 +214,6 @@ func TestWeird500Success16SteamTradeOffer(t *testing.T) {
 
 func TestWeird500SteamTradeOffer(t *testing.T) {
 
-	sessionID := "1234abcde"
 	creatorSteamID := mangosteam.SteamID(1234567890)
 	steamTradeOfferID := SteamTradeOfferID(1098765432)
 
@@ -219,11 +224,13 @@ func TestWeird500SteamTradeOffer(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
+	client.Jar, _ = cookiejar.New(nil)
+	baseURL, _ := url.Parse(ts.URL)
+	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
 
 	err := CancelSteamTradeOffer(
 		ts.URL,
 		&client,
-		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
 	)

@@ -20,10 +20,14 @@ const (
 func CancelSteamTradeOffer(
 	baseSteamWebURL string,
 	client *http.Client,
-	sessionID string,
 	creatorSteamID mangosteam.SteamID,
 	steamTradeOfferID SteamTradeOfferID,
 ) error {
+
+	sessionID, err := extractSessionIDFromClient(baseSteamWebURL, client)
+	if err != nil {
+		return err
+	}
 
 	req, err := getCancelSteamTradeOfferRequest(
 		baseSteamWebURL,
