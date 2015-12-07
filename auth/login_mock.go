@@ -12,7 +12,9 @@ func getMockKOLoginDologin() string {
 		}
 		`
 }
-func getMockOKLoginDologin() string {
+
+// GetMockOKLoginDologin ...
+func GetMockOKLoginDologin() string {
 
 	return `
 		{
@@ -26,7 +28,7 @@ func getMockOKLoginDologin() string {
 				"token":"2F55FFBBB857485858CC5785966AAA4585585518",
 				"auth":"4AF5848554B8547855C8574580852828",
 				"remember_login":false,
-				"token_secure":"85440F8545A46454D4854848422484248444BFFB"}
+				"token_secure":"85440F8545A46454D4854848422484248444BFFB"
 			}
 		}
 		`
