@@ -51,7 +51,7 @@ func TestDoOKLogin(t *testing.T) {
 		http.SetCookie(w, &http.Cookie{Name: "steamLogin", Value: "123"})
 		http.SetCookie(w, &http.Cookie{Name: "steamLoginSecure", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginDologin())
+		fmt.Fprintf(w, GetMockOKLoginDologin())
 	}))
 	defer ts.Close()
 
@@ -87,7 +87,7 @@ func TestMissingCookieDoLogin(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		http.SetCookie(w, &http.Cookie{Name: "steamLoginSecure", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginDologin())
+		fmt.Fprintf(w, GetMockOKLoginDologin())
 	}))
 	defer ts.Close()
 
@@ -123,7 +123,7 @@ func TestMissingCookieSecureDoLogin(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		http.SetCookie(w, &http.Cookie{Name: "steamLogin", Value: "1234"})
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginDologin())
+		fmt.Fprintf(w, GetMockOKLoginDologin())
 	}))
 	defer ts.Close()
 
