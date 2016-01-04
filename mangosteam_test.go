@@ -81,7 +81,12 @@ func TestGetAppIDFromString(t *testing.T) {
 
 func TestErrorGetSteamIDFromString(t *testing.T) {
 
-	c := []string{"1234567890123A", "0", ""}
+	c := []string{
+		"1234567890123A",
+		"0",
+		"",
+		"1234567890123456789012345678901234567890",
+	}
 
 	for _, steamIDstr := range c {
 		_, err := GetSteamIDFromString(steamIDstr)
@@ -89,7 +94,6 @@ func TestErrorGetSteamIDFromString(t *testing.T) {
 			t.Errorf("GetSteamIDFromString(%s) should return an error", steamIDstr)
 		}
 	}
-
 }
 
 func TestErrorGetAppIDFromString(t *testing.T) {

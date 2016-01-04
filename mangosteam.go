@@ -45,6 +45,10 @@ func (steamID SteamID) GetAccountID() string {
 func GetSteamIDFromString(strSteamID string) (SteamID, error) {
 	var steamID SteamID
 
+	if len(strSteamID) <= 0 || len(strSteamID) > 22 {
+		return steamID, fmt.Errorf("SteamID can't be %d characters long, it has to be between 7 and 22", len(strSteamID))
+	}
+
 	uint64SteamID, err := strconv.ParseUint(strSteamID, 10, 64)
 	if err != nil {
 		return steamID, err

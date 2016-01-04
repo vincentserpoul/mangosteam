@@ -31,7 +31,7 @@ func (user *User) Login(baseSteamWebURL string) error {
 	if isLoggedIn {
 		return nil
 	}
-
+	fmt.Printf("isloggedin: %t\n", isLoggedIn)
 	// resetting the login params
 	user.SteamLogin = ""
 	user.SteamLoginSecure = ""
@@ -56,7 +56,6 @@ func (user *User) Login(baseSteamWebURL string) error {
 		rsaKey.Timestamp,
 		"", "", "",
 	)
-
 	user.LastSessionID = sessionID
 	user.SteamLogin = steamLogin
 	user.SteamLoginSecure = steamLoginSecure
