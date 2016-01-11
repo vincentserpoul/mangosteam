@@ -26,45 +26,96 @@ func getTestUser() User {
 
 func TestOKGetAPIKey(t *testing.T) {
 	user := getTestUser()
+	expectedAPIKey := "01234567890123456789012345678901"
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockExistingAPIKeyPage())
 	}))
 	defer ts.Close()
-	_, err := user.getAPIKey(ts.URL)
+	APIKey, err := user.GetAPIKey(ts.URL)
 	if err != nil {
 		t.Errorf("Get APIKey should be successful %v", err)
 	}
-	return
+
+	if APIKey != expectedAPIKey {
+		t.Errorf("Register APIKey, expected `%s`, got returned key `%s`", expectedAPIKey, APIKey)
+	}
+
+	if user.APIKey != expectedAPIKey {
+		t.Errorf("Register APIKey, expected %s, got user key %s", expectedAPIKey, user.APIKey)
+	}
+
+}
+
+func TestOKGetAPIKeyNonRegistered(t *testing.T) {
+	user := getTestUser()
+	expectedAPIKey := "01234567890123456789012345678901"
+
+	testMux := http.NewServeMux()
+	// To force the path after isLoggedIn
+	testMux.HandleFunc(getAPIKeyURL, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, getMockNonExistingAPIKeyPage())
+	})
+
+	testMux.HandleFunc(registerAPIKeyURL, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, getMockExistingAPIKeyPage())
+	})
+	ts := httptest.NewServer(testMux)
+	defer ts.Close()
+
+	APIKey, err := user.GetAPIKey(ts.URL)
+	if err != nil {
+		t.Errorf("Get APIKey should be successful %v", err)
+	}
+
+	if APIKey != expectedAPIKey {
+		t.Errorf("Register APIKey, expected `%s`, got returned key `%s`", expectedAPIKey, APIKey)
+	}
+
+	if user.APIKey != expectedAPIKey {
+		t.Errorf("Register APIKey, expected %s, got user key %s", expectedAPIKey, user.APIKey)
+	}
 }
 
 func TestAccessDeniedGetAPIKey(t *testing.T) {
 	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockAccessDeniedgetAPIKey())
+		fmt.Fprintf(w, getMockAccessDeniedGetAPIKey())
 	}))
 	defer ts.Close()
-	_, err := user.getAPIKey(ts.URL)
+	_, err := user.GetAPIKey(ts.URL)
 	if err == nil {
 		t.Errorf("Access denied should not be successful, %v", err)
 	}
 	return
 }
 
-func TestOKregisterAPIKey(t *testing.T) {
+func TestOKRegisterAPIKey(t *testing.T) {
 	user := getTestUser()
+	expectedAPIKey := "01234567890123456789012345678901"
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, getMockOKLoginDologin())
+		fmt.Fprintf(w, getMockExistingAPIKeyPage())
 	}))
 	defer ts.Close()
-	err := user.registerAPIKey(ts.URL)
+
+	APIKey, err := user.registerAPIKey(ts.URL)
 	if err != nil {
 		t.Errorf("Register APIKey should be successful %v", err)
 	}
+
+	if APIKey != expectedAPIKey {
+		t.Errorf("Register APIKey, expected `%s`, got returned key `%s`", expectedAPIKey, APIKey)
+	}
+
 	return
 }
+
 func TestKOClient(t *testing.T) {
 	user := getTestUser()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -76,9 +127,10 @@ func TestKOClient(t *testing.T) {
 	}))
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
-	err := user.registerAPIKey(ts.URL)
+
+	_, err := user.registerAPIKey(ts.URL)
 	if err == nil {
-		t.Errorf("DoClient should return error")
+		t.Errorf("registerAPIKey should return error when timeout")
 	}
 
 	return
@@ -90,7 +142,7 @@ func TestEmptyAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockEmptyAPIKeyPage())
 	}))
 	defer ts.Close()
-	_, err := user.getAPIKey(ts.URL)
+	_, err := user.GetAPIKey(ts.URL)
 	if err == nil {
 		t.Errorf("Empty Apikey should return error")
 	}
@@ -104,7 +156,7 @@ func TestOKRevokeAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginDologin())
 	}))
 	defer ts.Close()
-	err := user.revokeAPIKey(ts.URL)
+	err := user.RevokeAPIKey(ts.URL)
 	if err != nil {
 		t.Errorf("RevokeAPIKey should be successful %v", err)
 	}
@@ -119,7 +171,7 @@ func TestKORevokeAPIKey(t *testing.T) {
 	}))
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
-	err := user.revokeAPIKey(ts.URL)
+	err := user.RevokeAPIKey(ts.URL)
 	if err == nil {
 		t.Errorf("Do RevokeAPIKey returns no error when Do PostForm failed")
 	}

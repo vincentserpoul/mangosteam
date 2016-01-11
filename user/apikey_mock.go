@@ -4,14 +4,12 @@ func getMockExistingAPIKeyPage() string {
 	return `
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
         <html>
-        <head>
-        <title>Steam</title>
-        </head>
-        <body>
-            <!-- main body -->
-            <div id="BG_bottom">
-                <div id="bodyContents_ex">
-
+            <head>
+                <title>Steam</title>
+            </head>
+            <body>
+                <div id="BG_bottom">
+                    <div id="bodyContents_ex">
                         <h2>Your Steam Web API Key</h2>
                         <p>Key: 01234567890123456789012345678901</p>
                         <p>Domain name: motus.com</p>
@@ -19,11 +17,43 @@ func getMockExistingAPIKeyPage() string {
                         <input type="submit" name="Revoke" value="">
                         <input type="hidden" name="sessionid" value="fakesession">
                         </form>
-
-
+                    </div>
                 </div>
-            </div>
-        </body>
+            </body>
+        </html>
+    `
+}
+
+func getMockNonExistingAPIKeyPage() string {
+	return `
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+        <html>
+            <head>
+                <title>Steam</title>
+            </head>
+            <body>
+                <div id="BG_bottom">
+                    <div id="bodyContents_ex">
+                        <h2>Register for a new Steam Web API Key</h2>
+                        <p>Registering for a Steam Web API Key will enable you to access many Steam features from your own website.</p>
+                        <form class="smallForm" id="editForm" name="editForm" method="POST" action="http://steamcommunity.com/dev/registerkey">
+                            <br />
+                            <div class="formRow">
+                                <div class="formRowDesc"><span class="whiteText">&nbsp;</span></div>
+                                <div class="formRowFields"><input type="text" class="dynInput inputText" name="domain" id="domain" size="70" value="" /></div>
+                                <div class="formRowTitle">Domain Name<br /><span class="titleSubtext"></span></div>
+                            </div>
+                            <div class="formRow">
+                                <div class="formRowDesc"><span class="whiteText">&nbsp;</span></div>
+                                <div class="agree"><input type="checkbox" name="agreeToTerms" id="agreeToTerms" value="agreed" /><label for="agreeToTerms">&nbsp;&nbsp;I agree to the <a target="_blank" href="http://steamcommunity.com/dev/apiterms" >Steam Web API Terms of Use</a></label></div>
+                                <div class="formRowTitle"><br /><span class="titleSubtext"></span></div>
+                            </div>
+                            <input type="hidden" name="sessionid" value="0764e9708324786ad09a65ca">
+                            <input type="submit" name="Submit" value="Register">
+                        </form>
+                    </div>
+                </div>
+            </body>
         </html>
     `
 }
@@ -76,7 +106,7 @@ func getMockEmptyAPIKeyPage() string {
     `
 }
 
-func getMockAccessDeniedgetAPIKey() string {
+func getMockAccessDeniedGetAPIKey() string {
 
 	return `
         <!DOCTYPE html>
