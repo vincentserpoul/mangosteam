@@ -9,11 +9,11 @@ import (
 
 // User represents a steam user
 type User struct {
-	SteamID          mangosteam.SteamID
+	SteamID          mangosteam.SteamID `json:"steam_id"`
 	SteamMachineAuth string
 	SteamLogin       string
 	SteamLoginSecure string
-	Username         string
+	Username         string `json:"username"`
 	Password         string
 	APIKey           string
 	Email            string
