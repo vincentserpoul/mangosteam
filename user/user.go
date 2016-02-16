@@ -22,7 +22,7 @@ type User struct {
 }
 
 // Login logs in the bot
-func (user *User) Login(baseSteamWebURL string, baseSteamAPIURL string) error {
+func (user *User) Login(baseSteamAPIURL string, baseSteamWebURL string) error {
 	isLoggedInclient := user.NewWebSteamClient(baseSteamWebURL)
 
 	isLoggedIn, err := auth.IsLoggedIn(baseSteamWebURL, isLoggedInclient)
@@ -30,7 +30,6 @@ func (user *User) Login(baseSteamWebURL string, baseSteamAPIURL string) error {
 		return fmt.Errorf("steamuser Login() : %v", err)
 	}
 	if isLoggedIn {
-		fmt.Println("we re in!")
 		return nil
 	}
 

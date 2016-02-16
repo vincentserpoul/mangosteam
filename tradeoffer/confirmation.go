@@ -30,15 +30,15 @@ type Confirmation struct {
 func FetchConfirmations(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 ) ([]*Confirmation, error) {
 
 	req, err := getFetchConfirmationsRequest(
 		steamID,
-		baseSteamWebURL,
 		baseSteamAPIURL,
+		baseSteamWebURL,
 		sga, "conf",
 	)
 	if err != nil {
@@ -59,7 +59,6 @@ func FetchConfirmations(
 	bodyStr := string(body)
 	// Nothing to confirm
 	if strings.Contains(bodyStr, "<div>Nothing to confirm</div>") {
-		fmt.Println("on dirait que ca fonctionne")
 		return nil, nil
 	}
 	if strings.Contains(bodyStr, "<div>There was a problem loading the confirmations page. Please try your request again later.</div>") {
@@ -99,8 +98,8 @@ func FetchConfirmations(
 
 func getFetchConfirmationsRequest(
 	steamID mangosteam.SteamID,
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	tag string,
 ) (*http.Request, error) {
@@ -121,16 +120,16 @@ func getFetchConfirmationsRequest(
 func AcceptConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 ) error {
 	return sendConfirmation(
 		client,
 		steamID,
-		baseSteamWebURL,
 		baseSteamAPIURL,
+		baseSteamWebURL,
 		sga,
 		cn,
 		"allow",
@@ -141,16 +140,16 @@ func AcceptConfirmation(
 func DenyConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 ) error {
 	return sendConfirmation(
 		client,
 		steamID,
-		baseSteamWebURL,
 		baseSteamAPIURL,
+		baseSteamWebURL,
 		sga,
 		cn,
 		"cancel",
@@ -160,16 +159,16 @@ func DenyConfirmation(
 func sendConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 	op string,
 ) error {
 
 	req, err := getSendConfirmationsRequest(
-		baseSteamWebURL,
 		baseSteamAPIURL,
+		baseSteamWebURL,
 		steamID,
 		sga,
 		cn,
@@ -202,8 +201,8 @@ func sendConfirmation(
 }
 
 func getSendConfirmationsRequest(
-	baseSteamWebURL string,
 	baseSteamAPIURL string,
+	baseSteamWebURL string,
 	steamID mangosteam.SteamID,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
