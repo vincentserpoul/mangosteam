@@ -24,6 +24,7 @@ func TestDoLogin(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -34,6 +35,7 @@ func TestDoLogin(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -62,6 +64,7 @@ func TestDoOKLogin(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -72,6 +75,7 @@ func TestDoOKLogin(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err != nil {
@@ -98,6 +102,7 @@ func TestMissingCookieDoLogin(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -108,6 +113,7 @@ func TestMissingCookieDoLogin(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -134,6 +140,7 @@ func TestMissingCookieSecureDoLogin(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -144,6 +151,7 @@ func TestMissingCookieSecureDoLogin(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -168,6 +176,7 @@ func TestHttpNotOKLogin(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -178,6 +187,7 @@ func TestHttpNotOKLogin(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -207,6 +217,8 @@ func TestKODoLoginForm(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
+
 	_, _, _, err := DoLogin(
 		ts.URL,
 		&client,
@@ -216,6 +228,7 @@ func TestKODoLoginForm(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -241,6 +254,7 @@ func TestEmailauthNeeded(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -251,6 +265,7 @@ func TestEmailauthNeeded(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {
@@ -276,6 +291,7 @@ func TestRespBody(t *testing.T) {
 	emailauthKeyedIn := ""
 	captchaGID := ""
 	captchaKeyedIn := ""
+	twoFactorCode := ""
 
 	_, _, _, err := DoLogin(
 		ts.URL,
@@ -286,6 +302,7 @@ func TestRespBody(t *testing.T) {
 		emailauthKeyedIn,
 		captchaGID,
 		captchaKeyedIn,
+		twoFactorCode,
 	)
 
 	if err == nil {

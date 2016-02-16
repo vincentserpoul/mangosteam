@@ -2,15 +2,34 @@ package auth
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/vincentserpoul/mangosteam"
 )
 
 // doLogInResponse is used to store the body of the steam doLogin response
 type doLogInResponse struct {
-	Success         bool `json:"success"`
-	EmailauthNeeded bool `json:"emailauth_needed"`
+	Success         bool   `json:"success"`
+	LoginComplete   bool   `json:"login_complete"`
+	CaptchaNeeded   bool   `json:"captcha_needed"`
+	CaptchaGID      string `json:"captcha_gid"`
+	EmailSteamID    uint64 `json:"emailsteamid,string"`
+	EmailAuthNeeded bool   `json:"emailauth_needed"`
+	TwoFactorNeeded bool   `json:"requires_twofactor"`
+	Message         string `json:"message"`
+	OAuth           OAuth  `json:"transfer_parameters"`
+}
+
+// OAuth is what will be used in future requests to specify we are logged in
+type OAuth struct {
+	SteamID       mangosteam.SteamID `json:"steamid,string"`
+	OAuthToken    string             `json:"auth"`
+	Token         string             `json:"token"`
+	TokenSecure   string             `json:"token_secure"`
+	LastSessionID string             `json:"webcookie"`
 }
 
 const (
@@ -19,6 +38,15 @@ const (
 	// IsLoggedInURL URL used to check if user is logged in
 	IsLoggedInURL string = "/actions/GetNotificationCounts"
 )
+
+// ErrTwoFactorNeeded is returned when the user needs to give a two factor code
+var ErrTwoFactorNeeded = errors.New("Two factor auth needed")
+
+// ErrEmailAuthNeeded is returned when the login requires an email code
+var ErrEmailAuthNeeded = errors.New("Email auth needed")
+
+// ErrCaptchaNeededNeeded is returned when the login requires a captcha
+var ErrCaptchaNeededNeeded = errors.New("Captcha needed")
 
 // DoLogin is used to log in the steam account after we got the encrypted password
 func DoLogin(
@@ -30,14 +58,9 @@ func DoLogin(
 	emailauthKeyedIn string,
 	captchaGID string,
 	captchaKeyedIn string,
-) (string, string, string, error) {
-
-	var sessionid, steamLogin, steamLoginSecure string
-
-	sessionid, err := getNewSessionID(baseSteamWebURL)
-	if err != nil {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
-	}
+	twoFactorCode string,
+) (OAuth, error) {
+	var oAuth OAuth
 
 	baseURL, _ := url.Parse(baseSteamWebURL + DoLoginURL)
 
@@ -50,29 +73,26 @@ func DoLogin(
 	params := url.Values{}
 	params.Add("password", encryptedPassword)
 	params.Add("username", username)
+	params.Add("twofactorcode", twoFactorCode)
 	params.Add("emailauth", emailauthKeyedIn)
-	params.Add("twofactorcode", "")
 	params.Add("loginfriendlyname", "")
 	params.Add("captchagid", captchaGID)
 	params.Add("captcha_text", captchaKeyedIn)
 	params.Add("emailsteamid", "")
 	params.Add("rsatimestamp", rsatimestamp)
-	params.Add("remember_login", "true")
 
 	baseURL.RawQuery = params.Encode()
 
 	req, err := http.NewRequest("POST", baseURL.String(), nil)
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-
 	resp, err := client.Do(req)
 	if err != nil {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
+		return oAuth, fmt.Errorf("auth DoLogin(): %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
+		return oAuth, fmt.Errorf("auth DoLogin(): bad request %v for %s, ",
 			resp.Status, username)
 	}
 
@@ -81,37 +101,21 @@ func DoLogin(
 	err = decoder.Decode(loginBody)
 
 	if err != nil {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): %v", err)
+		return oAuth, fmt.Errorf("auth DoLogin(): %v", err)
 	}
 
-	if loginBody.EmailauthNeeded {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamAuth invalid for %s, "+
-			" code sent via email", username)
+	if loginBody.EmailAuthNeeded {
+		return oAuth, ErrEmailAuthNeeded
 	}
 
 	if !loginBody.Success {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): unknown error for %s", username)
-	}
-
-	for _, cookie := range resp.Cookies() {
-
-		if cookie.Name == "steamLogin" {
-			steamLogin = cookie.Value
+		if loginBody.TwoFactorNeeded {
+			return oAuth, ErrTwoFactorNeeded
 		}
-		if cookie.Name == "steamLoginSecure" {
-			steamLoginSecure = cookie.Value
-		}
+		return oAuth, fmt.Errorf("auth DoLogin(): unknown error for %s", username)
 	}
 
-	if steamLogin == "" {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamLogin cookie is empty")
-	}
-
-	if steamLoginSecure == "" {
-		return sessionid, steamLogin, steamLoginSecure, fmt.Errorf("auth DoLogin(): steamLoginSecure cookie is empty")
-	}
-
-	return sessionid, steamLogin, steamLoginSecure, nil
+	return loginBody.OAuth, nil
 }
 
 // IsLoggedIn checks if a user is logged in or not

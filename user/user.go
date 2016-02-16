@@ -2,6 +2,7 @@ package steamuser
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/vincentserpoul/mangosteam"
 	"github.com/vincentserpoul/mangosteam/auth"
@@ -10,18 +11,18 @@ import (
 // User represents a steam user
 type User struct {
 	SteamID          mangosteam.SteamID `json:"steam_id"`
-	SteamMachineAuth string
-	SteamLogin       string
-	SteamLoginSecure string
-	Username         string `json:"username"`
+	Username         string             `json:"username"`
 	Password         string
 	APIKey           string
 	Email            string
-	LastSessionID    string
+	SteamLogin       string
+	SteamLoginSecure string
+	auth.SteamGuardAccount
+	auth.OAuth
 }
 
 // Login logs in the bot
-func (user *User) Login(baseSteamWebURL string) error {
+func (user *User) Login(baseSteamWebURL string, baseSteamAPIURL string) error {
 	isLoggedInclient := user.NewWebSteamClient(baseSteamWebURL)
 
 	isLoggedIn, err := auth.IsLoggedIn(baseSteamWebURL, isLoggedInclient)
@@ -29,6 +30,7 @@ func (user *User) Login(baseSteamWebURL string) error {
 		return fmt.Errorf("steamuser Login() : %v", err)
 	}
 	if isLoggedIn {
+		fmt.Println("we re in!")
 		return nil
 	}
 
@@ -36,8 +38,7 @@ func (user *User) Login(baseSteamWebURL string) error {
 	user.SteamLogin = ""
 	user.SteamLoginSecure = ""
 
-	client := user.NewWebSteamClient(baseSteamWebURL)
-
+	client := &http.Client{}
 	rsaKey, err := auth.GetRSAKey(baseSteamWebURL, user.Username)
 	if err != nil {
 		return fmt.Errorf("steamuser Login(): %v", err)
@@ -48,21 +49,26 @@ func (user *User) Login(baseSteamWebURL string) error {
 		return fmt.Errorf("steamuser Login(): %v", err)
 	}
 
-	sessionID, steamLogin, steamLoginSecure, err := auth.DoLogin(
+	steamGuardCode, err := user.GenerateSteamGuardCode(baseSteamAPIURL)
+	if err != nil {
+		return fmt.Errorf("steamuser Login(): %v", err)
+	}
+
+	user.OAuth, err = auth.DoLogin(
 		baseSteamWebURL,
 		client,
 		user.Username,
 		encryptedPassword,
 		rsaKey.Timestamp,
-		"", "", "",
+		"", "", "", steamGuardCode,
 	)
-	user.LastSessionID = sessionID
-	user.SteamLogin = steamLogin
-	user.SteamLoginSecure = steamLoginSecure
-
 	if err != nil {
 		return fmt.Errorf("steamuser Login(): %v error %v", user.Username, err)
 	}
+
+	user.SteamID = user.OAuth.SteamID
+	user.SteamLogin = user.SteamID.String() + "||" + user.OAuth.Token
+	user.SteamLoginSecure = user.SteamID.String() + "||" + user.OAuth.TokenSecure
 
 	return nil
 }

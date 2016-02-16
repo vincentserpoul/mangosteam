@@ -16,15 +16,6 @@ func (user *User) NewWebSteamClient(baseSteamWebURL string) *http.Client {
 
 	var cookiesToBeSet []*http.Cookie
 
-	if user.SteamMachineAuth != "" {
-		cookiesToBeSet = append(cookiesToBeSet,
-			&http.Cookie{
-				Name:  "steamMachineAuth" + user.SteamID.String(),
-				Value: user.SteamMachineAuth,
-			},
-		)
-	}
-
 	if user.SteamLogin != "" {
 		cookiesToBeSet = append(cookiesToBeSet,
 			&http.Cookie{
