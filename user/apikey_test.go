@@ -12,15 +12,11 @@ import (
 
 func getTestUser() User {
 	return User{
-		SteamID:          mangosteam.SteamID(123456789),
-		SteamMachineAuth: "1",
-		SteamLogin:       "1",
-		SteamLoginSecure: "1",
-		Username:         "1",
-		Password:         "1",
-		APIKey:           "1",
-		Email:            "1",
-		LastSessionID:    "1",
+		SteamID:  mangosteam.SteamID(123456789),
+		Username: "1",
+		Password: "1",
+		APIKey:   "1",
+		Email:    "1",
 	}
 }
 
