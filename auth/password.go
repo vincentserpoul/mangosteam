@@ -14,6 +14,7 @@ import (
 	"strconv"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/vincentserpoul/mangosteam"
 )
 
 // RSAKey represent the key for encoding password
@@ -23,18 +24,18 @@ type RSAKey struct {
 	Timestamp         string `json:"timestamp"`
 }
 
-// GetRSAKeyURL is the URL used to get the RSA Key
-const GetRSAKeyURL string = "/login/getrsakey"
+// GetRSAKeyURI is the URI used to get the RSA Key in prod
+const GetRSAKeyURI = "/login/getrsakey"
 
 // GetRSAKey queries steam to get the key needed to encode the password
-func GetRSAKey(baseSteamWebURL string, username string) (*RSAKey, error) {
+func GetRSAKey(username string) (*RSAKey, error) {
 
 	logrus.WithFields(logrus.Fields{
 		"username": username,
-	}).Debug("calling ", baseSteamWebURL+GetRSAKeyURL)
+	}).Debug("calling ", mangosteam.BaseSteamWebURL+GetRSAKeyURI)
 	// Est-ce testable voir solution login_test.go
 	resp, err := http.PostForm(
-		baseSteamWebURL+GetRSAKeyURL,
+		mangosteam.BaseSteamWebURL+GetRSAKeyURI,
 		url.Values{"username": {username}},
 	)
 	if err != nil {

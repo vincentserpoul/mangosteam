@@ -14,11 +14,17 @@ type ContextID uint64
 // AppID represents the AppID according to steam
 type AppID uint32
 
-// BaseSteamWebURL is the steam url used to do requests
-const BaseSteamWebURL = "https://steamcommunity.com"
+// BaseSteamWebURLProduction is the steam url used to do requests in prod
+const BaseSteamWebURLProduction = "https://steamcommunity.com"
 
-// BaseSteamWebURL is the steam url used to do requests
-const BaseSteamAPIURL = "https://api.steampowered.com"
+// BaseSteamWebURL is the global variable that will be used
+var BaseSteamWebURL = BaseSteamWebURLProduction
+
+// BaseSteamAPIURLProduction is the steam url used to do requests in prod
+const BaseSteamAPIURLProduction = "https://api.steampowered.com"
+
+// BaseSteamAPIURL is the steam url used to do requests
+var BaseSteamAPIURL = BaseSteamAPIURLProduction
 
 // String will turn a steamID into a string
 func (steamID SteamID) String() string {

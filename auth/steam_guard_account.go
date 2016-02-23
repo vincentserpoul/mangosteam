@@ -28,8 +28,8 @@ type SteamGuardAccount struct {
 }
 
 // GenerateSteamGuardCode gives a steamgaurd code for login
-func (a *SteamGuardAccount) GenerateSteamGuardCode(baseSteamAPIURL string) (string, error) {
-	return a.GenerateSteamGuardCodeForTime(GetSteamTime(baseSteamAPIURL))
+func (a *SteamGuardAccount) GenerateSteamGuardCode() (string, error) {
+	return a.GenerateSteamGuardCodeForTime(GetSteamTime())
 }
 
 // GenerateSteamGuardCodeForTime according to the server time

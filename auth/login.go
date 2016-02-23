@@ -33,10 +33,10 @@ type OAuth struct {
 }
 
 const (
-	// DoLoginURL URL used for login
-	DoLoginURL string = "/login/dologin"
-	// IsLoggedInURL URL used to check if user is logged in
-	IsLoggedInURL string = "/actions/GetNotificationCounts"
+	// DoLoginURI URL used for login
+	DoLoginURI string = "/login/dologin"
+	// IsLoggedInURI URL used to check if user is logged in
+	IsLoggedInURI string = "/actions/GetNotificationCounts"
 )
 
 // ErrTwoFactorNeeded is returned when the user needs to give a two factor code
@@ -50,7 +50,6 @@ var ErrCaptchaNeededNeeded = errors.New("Captcha needed")
 
 // DoLogin is used to log in the steam account after we got the encrypted password
 func DoLogin(
-	baseSteamWebURL string,
 	client *http.Client,
 	username string,
 	encryptedPassword string,
@@ -62,7 +61,7 @@ func DoLogin(
 ) (OAuth, error) {
 	var oAuth OAuth
 
-	baseURL, _ := url.Parse(baseSteamWebURL + DoLoginURL)
+	baseURL, _ := url.Parse(mangosteam.BaseSteamWebURL + DoLoginURI)
 
 	// default value set to -1
 	if captchaGID == "" {
@@ -119,8 +118,8 @@ func DoLogin(
 }
 
 // IsLoggedIn checks if a user is logged in or not
-func IsLoggedIn(baseSteamWebURL string, client *http.Client) (bool, error) {
-	resp, err := client.Get(baseSteamWebURL + IsLoggedInURL)
+func IsLoggedIn(client *http.Client) (bool, error) {
+	resp, err := client.Get(mangosteam.BaseSteamWebURL + IsLoggedInURI)
 	if err != nil {
 		return false, fmt.Errorf("auth IsLoggedin(): %v", err)
 	}

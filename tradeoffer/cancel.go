@@ -18,19 +18,17 @@ const (
 
 // CancelSteamTradeOffer will cancel the specific tradeoffer, make sure the client is the right steam account
 func CancelSteamTradeOffer(
-	baseSteamWebURL string,
 	client *http.Client,
 	creatorSteamID mangosteam.SteamID,
 	steamTradeOfferID SteamTradeOfferID,
 ) error {
 
-	sessionID, err := extractSessionIDFromClient(baseSteamWebURL, client)
+	sessionID, err := extractSessionIDFromClient(mangosteam.BaseSteamWebURL, client)
 	if err != nil {
 		return err
 	}
 
 	req, err := getCancelSteamTradeOfferRequest(
-		baseSteamWebURL,
 		sessionID,
 		creatorSteamID,
 		steamTradeOfferID,
@@ -72,15 +70,14 @@ func CancelSteamTradeOffer(
 }
 
 func getCancelSteamTradeOfferRequest(
-	baseSteamWebURL string,
 	sessionID string,
 	creatorSteamID mangosteam.SteamID,
 	steamTradeOfferID SteamTradeOfferID,
 ) (*http.Request, error) {
-	if (baseSteamWebURL == "") || (sessionID == "") || (creatorSteamID.String() == "") || (steamTradeOfferID.String() == "") {
+	if (sessionID == "") || (creatorSteamID.String() == "") || (steamTradeOfferID.String() == "") {
 		return nil, fmt.Errorf("getCancelSteamTradeOfferRequest: Empty baseSteamURL or sessionID or creatorSteamID or steamTradeOfferID")
 	}
-	baseURL, _ := url.Parse(baseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
+	baseURL, _ := url.Parse(mangosteam.BaseSteamWebURL + fmt.Sprintf(cancelTradeOfferURL, steamTradeOfferID))
 
 	form := url.Values{}
 	form.Add("sessionid", sessionID)
@@ -93,7 +90,7 @@ func getCancelSteamTradeOfferRequest(
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	// Referer
-	referer := baseSteamWebURL + fmt.Sprintf(cancelTradeOfferRefererURL, creatorSteamID)
+	referer := mangosteam.BaseSteamWebURL + fmt.Sprintf(cancelTradeOfferRefererURL, creatorSteamID)
 	req.Header.Add("Referer", referer)
 
 	return req, nil

@@ -40,7 +40,7 @@ func getTestOAuth() auth.OAuth {
 func TestLoginErrLoggedIn(t *testing.T) {
 	testMux := http.NewServeMux()
 	// To force the path after isLoggedIn
-	testMux.HandleFunc(auth.IsLoggedInURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.IsLoggedInURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 		time.Sleep(200 * time.Millisecond)
@@ -48,6 +48,8 @@ func TestLoginErrLoggedIn(t *testing.T) {
 	ts := httptest.NewServer(testMux)
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	user := User{
 		SteamID:           mangosteam.SteamID(123456789),
@@ -61,7 +63,7 @@ func TestLoginErrLoggedIn(t *testing.T) {
 		OAuth:             getTestOAuth(),
 	}
 
-	err := user.Login(ts.URL, ts.URL)
+	err := user.Login()
 	if err == nil {
 		t.Errorf("Dologin returns no error when login failed, %v", err)
 	}
@@ -71,12 +73,12 @@ func TestLoginErrLoggedIn(t *testing.T) {
 func TestTimeOutLoginGetRSAKey(t *testing.T) {
 	testMux := http.NewServeMux()
 	// To force the path after isLoggedIn
-	testMux.HandleFunc(auth.IsLoggedInURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.IsLoggedInURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 	})
 
-	testMux.HandleFunc(auth.GetRSAKeyURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.GetRSAKeyURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		time.Sleep(200 * time.Millisecond)
@@ -84,6 +86,8 @@ func TestTimeOutLoginGetRSAKey(t *testing.T) {
 	ts := httptest.NewServer(testMux)
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	user := User{
 		SteamID:           mangosteam.SteamID(123456789),
@@ -97,7 +101,7 @@ func TestTimeOutLoginGetRSAKey(t *testing.T) {
 		OAuth:             getTestOAuth(),
 	}
 
-	err := user.Login(ts.URL, ts.URL)
+	err := user.Login()
 	if err == nil {
 		t.Errorf("Dologin returns no error when login failed, %v", err)
 	}
@@ -107,18 +111,21 @@ func TestTimeOutLoginGetRSAKey(t *testing.T) {
 func TestLoginGetRSAKey(t *testing.T) {
 	testMux := http.NewServeMux()
 	// To force the path after isLoggedIn
-	testMux.HandleFunc(auth.IsLoggedInURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.IsLoggedInURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 	})
 
-	testMux.HandleFunc(auth.DoLoginURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.DoLoginURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockKOLoginGetrsakey())
 	})
 	ts := httptest.NewServer(testMux)
 	defer ts.Close()
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
+
 	user := User{
 		SteamID:           mangosteam.SteamID(123456789),
 		Username:          "1",
@@ -130,7 +137,7 @@ func TestLoginGetRSAKey(t *testing.T) {
 		SteamGuardAccount: getTestSteamGuardAccount(),
 		OAuth:             getTestOAuth(),
 	}
-	err := user.Login(ts.URL, ts.URL)
+	err := user.Login()
 	if err == nil {
 		t.Errorf("Dologin returns no error when login failed, %v", err)
 	}
@@ -140,17 +147,19 @@ func TestLoginGetRSAKey(t *testing.T) {
 func TestLoginEncryptPasswordFail(t *testing.T) {
 	testMux := http.NewServeMux()
 	// To force the path after isLoggedIn
-	testMux.HandleFunc(auth.IsLoggedInURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.IsLoggedInURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 	})
-	testMux.HandleFunc(auth.DoLoginURL, func(w http.ResponseWriter, r *http.Request) {
+	testMux.HandleFunc(auth.DoLoginURI, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	})
 	ts := httptest.NewServer(testMux)
 	defer ts.Close()
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	user := User{
 		SteamID:           mangosteam.SteamID(123456789),
@@ -164,7 +173,7 @@ func TestLoginEncryptPasswordFail(t *testing.T) {
 		OAuth:             getTestOAuth(),
 	}
 
-	err := user.Login(ts.URL, ts.URL)
+	err := user.Login()
 	if err == nil {
 		t.Errorf("Dologin returns no error when empty password, %v", err)
 	}
@@ -190,7 +199,10 @@ func TestLoginDoLogin(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
-	err := user.Login(ts.URL, ts.URL)
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	err := user.Login()
 	if err == nil {
 		t.Errorf("Dologin returns when status not found error , %v", err)
 	}
@@ -216,7 +228,10 @@ func TestOKLogin(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginGetrsakey())
 	}))
 	defer ts.Close()
-	err := user.Login(ts.URL, ts.URL)
+	mangosteam.BaseSteamAPIURL = ts.URL
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	err := user.Login()
 	if err != nil {
 		t.Errorf("Dologin should not failed")
 	}

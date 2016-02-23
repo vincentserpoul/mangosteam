@@ -27,13 +27,12 @@ const (
 // GetItemsFromReceipt allows the retrieval of new itemids for the items
 func GetItemsFromReceipt(
 	client *http.Client,
-	baseSteamWebURL string,
 	tradeID uint64,
 ) ([]ReceiptItem, error) {
 
 	var emptyItems []ReceiptItem
 
-	resp, err := client.Get(baseSteamWebURL + fmt.Sprintf(tradeOfferReceiptURL, tradeID))
+	resp, err := client.Get(mangosteam.BaseSteamWebURL + fmt.Sprintf(tradeOfferReceiptURL, tradeID))
 
 	if err != nil {
 		return emptyItems, fmt.Errorf("tradeoffer GetItemsFromReceipt(%d): %v",

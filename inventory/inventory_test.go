@@ -100,7 +100,9 @@ func TestGetUserWebInventoryEmpty(t *testing.T) {
 		fmt.Fprintf(w, GetMockGetUserWebInventoryEmpty())
 	}))
 	defer ts.Close()
-	_, err := GetUserWebInventory(ts.URL, appID, steamID)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := GetUserWebInventory(appID, steamID)
 	if err == nil {
 		t.Errorf("GetUserWebInventory should return error with no inventory")
 	}
@@ -116,7 +118,9 @@ func TestGetUserWebInventoryTimeout(t *testing.T) {
 	}))
 	defer ts.Close()
 	ts.Config.WriteTimeout = 20 * time.Millisecond
-	_, err := GetUserWebInventory(ts.URL, appID, steamID)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := GetUserWebInventory(appID, steamID)
 	if err == nil {
 		t.Errorf("GetUserWebInventory should return error with timeout")
 	}
@@ -128,8 +132,9 @@ func TestGetUserWebInventoryURL(t *testing.T) {
 	steamID := mangosteam.SteamID(1234567890)
 	appID := mangosteam.AppID(730)
 	baseSteamWebURL := "https://steam"
+	mangosteam.BaseSteamWebURL = baseSteamWebURL
 
-	inventoryURL := getUserWebInventoryURL(baseSteamWebURL, steamID, appID)
+	inventoryURL := getUserWebInventoryURL(steamID, appID)
 	expectedInventoryURL := "https://steam/profiles/1234567890/inventory/json/730/2?l=english&trading=1"
 
 	if inventoryURL != expectedInventoryURL {
@@ -149,8 +154,9 @@ func TestGetUserWebInventory(t *testing.T) {
 		fmt.Fprintf(w, GetMockOKProfilesInventory())
 	}))
 	defer ts.Close()
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	userInventory, err := GetUserWebInventory(ts.URL, appID, steamID)
+	userInventory, err := GetUserWebInventory(appID, steamID)
 
 	if err != nil {
 		t.Errorf("GetUserWebInventory(%s, %v, %v) error: %v", ts.URL, appID, steamID, err)

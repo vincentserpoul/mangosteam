@@ -41,8 +41,9 @@ func TestGetPrice(t *testing.T) {
 			fmt.Fprintf(w, c.Mock())
 		}))
 		defer ts.Close()
+		mangosteam.BaseSteamWebURL = ts.URL
 
-		gotPrice, err := GetPrice(ts.URL, mangosteam.AppID(730), "test")
+		gotPrice, err := GetPrice(mangosteam.AppID(730), "test")
 		if c.ExpectedErr != nil {
 			if err == nil {
 				t.Errorf("GetPrice(%v) expected an error, didnt get any", c)
@@ -86,8 +87,9 @@ loopcases:
 			fmt.Fprintf(w, c.Mock())
 		}))
 		defer ts.Close()
+		mangosteam.BaseSteamWebURL = ts.URL
 
-		gotPriceOverview, err := getPriceOverview(ts.URL, mangosteam.AppID(730), "test")
+		gotPriceOverview, err := getPriceOverview(mangosteam.AppID(730), "test")
 		if c.ExpectedErr != nil {
 			if err == nil {
 				t.Errorf("GetPriceOverview(%v) expected an error, didnt get any", c)
@@ -109,9 +111,10 @@ func TestTimeoutGetPriceOverview(t *testing.T) {
 		time.Sleep(200 * time.Millisecond)
 	}))
 	defer ts.Close()
+	mangosteam.BaseSteamWebURL = ts.URL
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 
-	_, err := getPriceOverview(ts.URL, mangosteam.AppID(730), "test")
+	_, err := getPriceOverview(mangosteam.AppID(730), "test")
 	if err == nil {
 		t.Errorf("GetPriceOverview() expected an error, didnt get any")
 	}
@@ -124,7 +127,8 @@ func TestGetPriceURL(t *testing.T) {
 	marketHashName := `$fdgggr | pollux`
 	expectedURL := `http://www.testurl.com/market/priceoverview?currency=1&appid=730&format=json&language=en&market_hash_name=%24fdgggr+%7C+pollux`
 
-	gotURL := getPriceURL(baseSteamWebURL, appID, marketHashName)
+	gotURL := getPriceURL(appID, marketHashName)
+	mangosteam.BaseSteamWebURL = baseSteamWebURL
 
 	gotURLP, _ := url.Parse(gotURL)
 	expectedURLP, _ := url.Parse(expectedURL)

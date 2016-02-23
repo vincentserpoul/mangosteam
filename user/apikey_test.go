@@ -29,7 +29,9 @@ func TestOKGetAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockExistingAPIKeyPage())
 	}))
 	defer ts.Close()
-	APIKey, err := user.GetAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	APIKey, err := user.GetAPIKey()
 	if err != nil {
 		t.Errorf("Get APIKey should be successful %v", err)
 	}
@@ -61,8 +63,9 @@ func TestOKGetAPIKeyNonRegistered(t *testing.T) {
 	})
 	ts := httptest.NewServer(testMux)
 	defer ts.Close()
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	APIKey, err := user.GetAPIKey(ts.URL)
+	APIKey, err := user.GetAPIKey()
 	if err != nil {
 		t.Errorf("Get APIKey should be successful %v", err)
 	}
@@ -83,7 +86,9 @@ func TestAccessDeniedGetAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockAccessDeniedGetAPIKey())
 	}))
 	defer ts.Close()
-	_, err := user.GetAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := user.GetAPIKey()
 	if err == nil {
 		t.Errorf("Access denied should not be successful, %v", err)
 	}
@@ -99,8 +104,9 @@ func TestOKRegisterAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockExistingAPIKeyPage())
 	}))
 	defer ts.Close()
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	APIKey, err := user.registerAPIKey(ts.URL)
+	APIKey, err := user.registerAPIKey()
 	if err != nil {
 		t.Errorf("Register APIKey should be successful %v", err)
 	}
@@ -124,7 +130,9 @@ func TestKOClient(t *testing.T) {
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
 
-	_, err := user.registerAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := user.registerAPIKey()
 	if err == nil {
 		t.Errorf("registerAPIKey should return error when timeout")
 	}
@@ -138,7 +146,9 @@ func TestEmptyAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockEmptyAPIKeyPage())
 	}))
 	defer ts.Close()
-	_, err := user.GetAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := user.GetAPIKey()
 	if err == nil {
 		t.Errorf("Empty Apikey should return error")
 	}
@@ -152,7 +162,9 @@ func TestOKRevokeAPIKey(t *testing.T) {
 		fmt.Fprintf(w, getMockOKLoginDologin())
 	}))
 	defer ts.Close()
-	err := user.RevokeAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	err := user.RevokeAPIKey()
 	if err != nil {
 		t.Errorf("RevokeAPIKey should be successful %v", err)
 	}
@@ -167,7 +179,9 @@ func TestKORevokeAPIKey(t *testing.T) {
 	}))
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
-	err := user.RevokeAPIKey(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	err := user.RevokeAPIKey()
 	if err == nil {
 		t.Errorf("Do RevokeAPIKey returns no error when Do PostForm failed")
 	}

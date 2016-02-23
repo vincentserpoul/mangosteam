@@ -9,15 +9,17 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/vincentserpoul/mangosteam"
 )
 
 var isTimeAligned bool
 var steamTimeDifference int64
 
 // GetSteamTime return the time adjusted with the steam diff
-func GetSteamTime(baseSteamAPIURL string) int64 {
+func GetSteamTime() int64 {
 	if !isTimeAligned {
-		AlignTime(baseSteamAPIURL)
+		AlignTime()
 	}
 	return time.Now().Unix() + steamTimeDifference
 }
@@ -26,10 +28,10 @@ func GetSteamTime(baseSteamAPIURL string) int64 {
 // probably not taking some things into account that it should.
 // Necessary to generate up-to-date codes. In general, this will have an error
 // of less than a second, assuming Steam is operational.
-func AlignTime(baseSteamAPIURL string) error {
+func AlignTime() error {
 	now := time.Now().Unix()
 	client := new(http.Client)
-	resp, err := client.Post(baseSteamAPIURL+"/ITwoFactorService/QueryTime/v0001", "application/x-www-form-urlencoded", bytes.NewBuffer([]byte("steamid=0")))
+	resp, err := client.Post(mangosteam.BaseSteamAPIURL+"/ITwoFactorService/QueryTime/v0001", "application/x-www-form-urlencoded", bytes.NewBuffer([]byte("steamid=0")))
 	if err != nil {
 		return err
 	}

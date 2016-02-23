@@ -22,10 +22,10 @@ type User struct {
 }
 
 // Login logs in the bot
-func (user *User) Login(baseSteamAPIURL string, baseSteamWebURL string) error {
-	isLoggedInclient := user.NewWebSteamClient(baseSteamWebURL)
+func (user *User) Login() error {
+	isLoggedInclient := user.NewWebSteamClient()
 
-	isLoggedIn, err := auth.IsLoggedIn(baseSteamWebURL, isLoggedInclient)
+	isLoggedIn, err := auth.IsLoggedIn(isLoggedInclient)
 	if err != nil {
 		return fmt.Errorf("steamuser Login() : %v", err)
 	}
@@ -38,7 +38,7 @@ func (user *User) Login(baseSteamAPIURL string, baseSteamWebURL string) error {
 	user.SteamLoginSecure = ""
 
 	client := &http.Client{}
-	rsaKey, err := auth.GetRSAKey(baseSteamWebURL, user.Username)
+	rsaKey, err := auth.GetRSAKey(user.Username)
 	if err != nil {
 		return fmt.Errorf("steamuser Login(): %v", err)
 	}
@@ -48,13 +48,12 @@ func (user *User) Login(baseSteamAPIURL string, baseSteamWebURL string) error {
 		return fmt.Errorf("steamuser Login(): %v", err)
 	}
 
-	steamGuardCode, err := user.GenerateSteamGuardCode(baseSteamAPIURL)
+	steamGuardCode, err := user.GenerateSteamGuardCode()
 	if err != nil {
 		return fmt.Errorf("steamuser Login(): %v", err)
 	}
 
 	user.OAuth, err = auth.DoLogin(
-		baseSteamWebURL,
 		client,
 		user.Username,
 		encryptedPassword,

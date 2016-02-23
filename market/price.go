@@ -22,44 +22,44 @@ type PriceOverview struct {
 const priceURL string = "/market/priceoverview"
 
 // GetPrice returns a float for the price of the item
-func GetPrice(baseSteamWebURL string, appID mangosteam.AppID, marketHashName string) (float64, error) {
-	priceOverview, err := getPriceOverview(baseSteamWebURL, appID, marketHashName)
+func GetPrice(appID mangosteam.AppID, marketHashName string) (float64, error) {
+	priceOverview, err := getPriceOverview(appID, marketHashName)
 	if err != nil {
-		return 0, fmt.Errorf("market GetPrice(%s, %d, %s): %v", baseSteamWebURL, appID, marketHashName, err)
+		return 0, fmt.Errorf("market GetPrice(%d, %s): %v", appID, marketHashName, err)
 	}
 	if !priceOverview.Success {
-		return 0, fmt.Errorf("market GetPrice(%s, %d, %s): steam replied with success:false", baseSteamWebURL, appID, marketHashName)
+		return 0, fmt.Errorf("market GetPrice(%d, %s): steam replied with success:false", appID, marketHashName)
 	}
 
 	priceOverview.LowestPrice = strings.TrimPrefix(priceOverview.LowestPrice, "$")
 
 	price, err := strconv.ParseFloat(priceOverview.LowestPrice, 64)
 	if err != nil {
-		return 0, fmt.Errorf("market GetPrice(%s, %d, %s): %v", baseSteamWebURL, appID, marketHashName, err)
+		return 0, fmt.Errorf("market GetPrice(%d, %s): %v", appID, marketHashName, err)
 	}
 
 	return price, nil
 }
 
 // GetPrice will return a price for an item
-func getPriceOverview(baseSteamWebURL string, appID mangosteam.AppID, marketHashName string) (*PriceOverview, error) {
+func getPriceOverview(appID mangosteam.AppID, marketHashName string) (*PriceOverview, error) {
 	var price PriceOverview
-	res, err := http.Get(getPriceURL(baseSteamWebURL, appID, marketHashName))
+	res, err := http.Get(getPriceURL(appID, marketHashName))
 	if err != nil {
-		return nil, fmt.Errorf("market getPriceOverview(%s, %d, %s): %v", baseSteamWebURL, appID, marketHashName, err)
+		return nil, fmt.Errorf("market getPriceOverview(%d, %s): %v", appID, marketHashName, err)
 	}
 	defer res.Body.Close()
 
 	err = json.NewDecoder(res.Body).Decode(&price)
 	if err != nil {
-		return nil, fmt.Errorf("market getPriceOverview(%s, %d, %s): %v", baseSteamWebURL, appID, marketHashName, err)
+		return nil, fmt.Errorf("market getPriceOverview(%d, %s): %v", appID, marketHashName, err)
 	}
 
 	return &price, nil
 
 }
 
-func getPriceURL(baseSteamWebURL string, appID mangosteam.AppID, marketHashName string) string {
+func getPriceURL(appID mangosteam.AppID, marketHashName string) string {
 
 	v := url.Values{}
 	v.Add("currency", "1")
@@ -68,5 +68,5 @@ func getPriceURL(baseSteamWebURL string, appID mangosteam.AppID, marketHashName 
 	v.Add("language", "en")
 	v.Add("market_hash_name", marketHashName)
 
-	return baseSteamWebURL + priceURL + `?` + v.Encode()
+	return mangosteam.BaseSteamWebURL + priceURL + `?` + v.Encode()
 }

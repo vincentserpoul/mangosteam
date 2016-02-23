@@ -34,7 +34,6 @@ type Result struct {
 
 // CreateSteamTradeOffer sends a new trade offer to the given Steam user.
 func CreateSteamTradeOffer(
-	baseSteamWebURL string,
 	client *http.Client,
 	otherSteamID mangosteam.SteamID,
 	accessToken string,
@@ -42,13 +41,12 @@ func CreateSteamTradeOffer(
 	message string,
 ) (*Result, error) {
 
-	sessionID, err := extractSessionIDFromClient(baseSteamWebURL, client)
+	sessionID, err := extractSessionIDFromClient(mangosteam.BaseSteamWebURL, client)
 	if err != nil {
 		return nil, err
 	}
 
 	req, err := getCreateSteamTradeOfferRequest(
-		baseSteamWebURL,
 		sessionID,
 		otherSteamID,
 		accessToken,
@@ -85,17 +83,16 @@ func CreateSteamTradeOffer(
 }
 
 func getCreateSteamTradeOfferRequest(
-	baseSteamWebURL string,
 	sessionID string,
 	otherSteamID mangosteam.SteamID,
 	accessToken string,
 	myItems, theirItems []*Asset,
 	message string,
 ) (*http.Request, error) {
-	if (baseSteamWebURL == "") || (sessionID == "") || (otherSteamID.String() == "") || (accessToken == "") {
+	if (sessionID == "") || (otherSteamID.String() == "") || (accessToken == "") {
 		return nil, fmt.Errorf("getCreateSteamTradeOfferRequest: Empty baseSteamURL or sessionID or otherSteamID or accessToken")
 	}
-	baseURL, _ := url.Parse(baseSteamWebURL + newTradeOfferSendURL)
+	baseURL, _ := url.Parse(mangosteam.BaseSteamWebURL + newTradeOfferSendURL)
 
 	tradeOfferJSON, err := getJSONTradeOffer(myItems, theirItems)
 
@@ -122,7 +119,7 @@ func getCreateSteamTradeOfferRequest(
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 
 	// Headers
-	referer := baseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
+	referer := mangosteam.BaseSteamWebURL + newTradeOfferSendRefererURL + otherSteamID.GetAccountID()
 	req.Header.Add("Referer", referer)
 
 	return req, nil

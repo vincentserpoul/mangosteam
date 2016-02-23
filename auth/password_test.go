@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/vincentserpoul/mangosteam"
 )
 
 func TestEncryptPasswordEmptyPassword(t *testing.T) {
@@ -137,7 +139,8 @@ func TestMockOKGetRSAKey(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	key, err := GetRSAKey(ts.URL, username)
+	mangosteam.BaseSteamWebURL = ts.URL
+	key, err := GetRSAKey(username)
 
 	if err != nil {
 		t.Errorf("GetRSAkey httptest is failing: %v", err)
@@ -160,7 +163,8 @@ func TestMockKOSteamGetRSAKey(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := GetRSAKey(ts.URL, username)
+	mangosteam.BaseSteamWebURL = ts.URL
+	_, err := GetRSAKey(username)
 
 	if err == nil {
 		t.Errorf("GetRSAkey httptest should failing")
@@ -175,7 +179,8 @@ func TestMockKOGetRSAKey(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	key, err := GetRSAKey(ts.URL, username)
+	mangosteam.BaseSteamWebURL = ts.URL
+	key, err := GetRSAKey(username)
 
 	if key != nil || err == nil {
 		t.Errorf("GetRSAkey failing but not showing errors")
@@ -209,7 +214,9 @@ func TestKODoLoginPostForm(t *testing.T) {
 	}))
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	defer ts.Close()
-	_, err := GetRSAKey(ts.URL, username)
+
+	mangosteam.BaseSteamWebURL = ts.URL
+	_, err := GetRSAKey(username)
 	if err == nil {
 		t.Errorf("Dologin returns no error when DoLogin PostForm failed")
 	}

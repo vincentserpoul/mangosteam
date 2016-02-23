@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/vincentserpoul/mangosteam"
 )
 
 const (
@@ -18,11 +19,11 @@ const (
 )
 
 // GetAPIKey allows to get the API key directly from steam interface
-func (user *User) GetAPIKey(baseSteamWebURL string) (string, error) {
+func (user *User) GetAPIKey() (string, error) {
 
-	client := user.NewWebSteamClient(baseSteamWebURL)
+	client := user.NewWebSteamClient()
 
-	resp, err := client.Get(baseSteamWebURL + getAPIKeyURL)
+	resp, err := client.Get(mangosteam.BaseSteamWebURL + getAPIKeyURL)
 	if err != nil {
 		return "", fmt.Errorf("steamuser GetAPIKey(): %v error %v", user.Username, err)
 	}
@@ -34,7 +35,7 @@ func (user *User) GetAPIKey(baseSteamWebURL string) (string, error) {
 	}
 
 	if err == errKeyNotRegistered {
-		APIKey, err = user.registerAPIKey(baseSteamWebURL)
+		APIKey, err = user.registerAPIKey()
 		if err != nil {
 			return "", fmt.Errorf("steamuser GetAPIKey(): %v error %v", user.Username, err)
 		}
@@ -50,11 +51,11 @@ func (user *User) GetAPIKey(baseSteamWebURL string) (string, error) {
 }
 
 // RegisterAPIKey allows to request for an API key
-func (user *User) registerAPIKey(baseSteamWebURL string) (string, error) {
+func (user *User) registerAPIKey() (string, error) {
 
-	client := user.NewWebSteamClient(baseSteamWebURL)
+	client := user.NewWebSteamClient()
 
-	baseURL, err := url.Parse(baseSteamWebURL + registerAPIKeyURL)
+	baseURL, err := url.Parse(mangosteam.BaseSteamWebURL + registerAPIKeyURL)
 	if err != nil {
 		return "", fmt.Errorf("steamuser RegisterAPIKey(): %v error %v", user.Username, err)
 	}
@@ -119,11 +120,11 @@ func extractAPIKey(htmlContent io.Reader) (string, error) {
 }
 
 // RevokeAPIKey cancel Key
-func (user *User) RevokeAPIKey(baseSteamWebURL string) error {
+func (user *User) RevokeAPIKey() error {
 
-	client := user.NewWebSteamClient(baseSteamWebURL)
+	client := user.NewWebSteamClient()
 
-	baseURL, err := url.Parse(baseSteamWebURL + revokeAPIKeyURL)
+	baseURL, err := url.Parse(mangosteam.BaseSteamWebURL + revokeAPIKeyURL)
 	if err != nil {
 		return fmt.Errorf("steamuser RevokeAPIKey(): %v error %v", user.Username, err)
 	}

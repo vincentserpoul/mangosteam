@@ -21,7 +21,9 @@ func TestGetItemsFromReceipt(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
-	receiptItems, _ := GetItemsFromReceipt(&client, ts.URL, uint64(123))
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	receiptItems, _ := GetItemsFromReceipt(&client, uint64(123))
 
 	expectedItems := []ReceiptItem{
 		ReceiptItem{
@@ -70,7 +72,9 @@ func TestKOGetItemsFromReceipt(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
-	_, err := GetItemsFromReceipt(&client, ts.URL, uint64(123))
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := GetItemsFromReceipt(&client, uint64(123))
 	if err == nil {
 		t.Errorf("GetItemsFromReceipt() should return an error if the json is not correct")
 	}
@@ -84,7 +88,9 @@ func TestStatus500GetItemsFromReceipt(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := http.Client{}
-	_, err := GetItemsFromReceipt(&client, ts.URL, uint64(123))
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := GetItemsFromReceipt(&client, uint64(123))
 	if err == nil {
 		t.Errorf("GetItemsFromReceipt() should return an error if the server doesnt reply")
 	}
@@ -100,7 +106,9 @@ func TestTimeOutGetItemsFromReceipt(t *testing.T) {
 	defer ts.Close()
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	client := http.Client{}
-	_, err := GetItemsFromReceipt(&client, ts.URL, uint64(123))
+	mangosteam.BaseSteamWebURL = ts.URL
+
+	_, err := GetItemsFromReceipt(&client, uint64(123))
 	if err == nil {
 		t.Errorf("GetItemsFromReceipt() should return an error if the server doesnt reply")
 	}

@@ -27,9 +27,11 @@ func TestOKNewWebSteamClient(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer ts.Close()
-	client := user.NewWebSteamClient(ts.URL)
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	u, _ := url.Parse(ts.URL)
+	client := user.NewWebSteamClient()
+
+	u, _ := url.Parse(mangosteam.BaseSteamWebURL)
 
 	foundSessionIDCookie := false
 	foundSteamLoginCookie := false

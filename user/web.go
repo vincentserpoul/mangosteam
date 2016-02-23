@@ -4,15 +4,17 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
+
+	"github.com/vincentserpoul/mangosteam"
 )
 
 // NewWebSteamClient creates a web steam client with the right cookies
 // to interact with web steam
-func (user *User) NewWebSteamClient(baseSteamWebURL string) *http.Client {
+func (user *User) NewWebSteamClient() *http.Client {
 	client := &http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 
-	steamURL, _ := url.Parse(baseSteamWebURL)
+	steamURL, _ := url.Parse(mangosteam.BaseSteamWebURL)
 
 	var cookiesToBeSet []*http.Cookie
 

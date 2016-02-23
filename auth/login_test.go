@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/vincentserpoul/mangosteam"
 )
 
 func TestDoLogin(t *testing.T) {
@@ -25,9 +27,9 @@ func TestDoLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -65,9 +67,9 @@ func TestDoOKLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -101,9 +103,9 @@ func TestHttpNotOKLogin(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -142,9 +144,9 @@ func TestKODoLoginForm(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -179,9 +181,9 @@ func TestEmailauthNeeded(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -216,9 +218,9 @@ func TestRespBody(t *testing.T) {
 	captchaGID := ""
 	captchaKeyedIn := ""
 	twoFactorCode := ""
+	mangosteam.BaseSteamWebURL = ts.URL
 
 	_, err := DoLogin(
-		ts.URL,
 		&client,
 		username,
 		encryptedPassword,
@@ -244,8 +246,9 @@ func TestOKIsLoggedIn(t *testing.T) {
 	defer ts.Close()
 
 	client := http.Client{}
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	isLoggedIn, _ := IsLoggedIn(ts.URL, &client)
+	isLoggedIn, _ := IsLoggedIn(&client)
 
 	if !isLoggedIn {
 		t.Errorf("isLoggedIn should return true in case of status unauthorized")
@@ -261,8 +264,9 @@ func TestKOIsLoggedIn(t *testing.T) {
 	defer ts.Close()
 
 	client := http.Client{}
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	isLoggedIn, _ := IsLoggedIn(ts.URL, &client)
+	isLoggedIn, _ := IsLoggedIn(&client)
 	if isLoggedIn {
 		t.Errorf("isLoggedIn should return false in case of status unauthorized")
 	}
@@ -279,8 +283,9 @@ func TestTimeOutIsLoggedIn(t *testing.T) {
 
 	ts.Config.WriteTimeout = 20 * time.Millisecond
 	client := http.Client{}
+	mangosteam.BaseSteamWebURL = ts.URL
 
-	isLoggedIn, err := IsLoggedIn(ts.URL, &client)
+	isLoggedIn, err := IsLoggedIn(&client)
 	if isLoggedIn || err == nil {
 		t.Errorf("isLoggedIn should return false and an error in case of http error")
 	}

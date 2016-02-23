@@ -30,15 +30,11 @@ type Confirmation struct {
 func FetchConfirmations(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 ) ([]*Confirmation, error) {
 
 	req, err := getFetchConfirmationsRequest(
 		steamID,
-		baseSteamAPIURL,
-		baseSteamWebURL,
 		sga, "conf",
 	)
 	if err != nil {
@@ -98,13 +94,10 @@ func FetchConfirmations(
 
 func getFetchConfirmationsRequest(
 	steamID mangosteam.SteamID,
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	tag string,
 ) (*http.Request, error) {
 	queryParams, err := generateConfirmationQueryParams(
-		baseSteamAPIURL,
 		steamID,
 		sga,
 		tag,
@@ -113,23 +106,19 @@ func getFetchConfirmationsRequest(
 		return nil, err
 	}
 
-	return http.NewRequest("GET", baseSteamWebURL+"/mobileconf/conf?"+queryParams.Encode(), nil)
+	return http.NewRequest("GET", mangosteam.BaseSteamWebURL+"/mobileconf/conf?"+queryParams.Encode(), nil)
 }
 
 // AcceptConfirmation will accept confirmation
 func AcceptConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 ) error {
 	return sendConfirmation(
 		client,
 		steamID,
-		baseSteamAPIURL,
-		baseSteamWebURL,
 		sga,
 		cn,
 		"allow",
@@ -140,16 +129,12 @@ func AcceptConfirmation(
 func DenyConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 ) error {
 	return sendConfirmation(
 		client,
 		steamID,
-		baseSteamAPIURL,
-		baseSteamWebURL,
 		sga,
 		cn,
 		"cancel",
@@ -159,16 +144,12 @@ func DenyConfirmation(
 func sendConfirmation(
 	client *http.Client,
 	steamID mangosteam.SteamID,
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 	op string,
 ) error {
 
 	req, err := getSendConfirmationsRequest(
-		baseSteamAPIURL,
-		baseSteamWebURL,
 		steamID,
 		sga,
 		cn,
@@ -201,15 +182,12 @@ func sendConfirmation(
 }
 
 func getSendConfirmationsRequest(
-	baseSteamAPIURL string,
-	baseSteamWebURL string,
 	steamID mangosteam.SteamID,
 	sga *auth.SteamGuardAccount,
 	cn *Confirmation,
 	tag string,
 ) (*http.Request, error) {
 	queryParams, err := generateConfirmationQueryParams(
-		baseSteamAPIURL,
 		steamID,
 		sga,
 		tag,
@@ -222,11 +200,10 @@ func getSendConfirmationsRequest(
 	queryParams.Set("cid", cn.ConfirmationID)
 	queryParams.Set("ck", cn.ConfirmationKey)
 
-	return http.NewRequest("GET", baseSteamWebURL+"/mobileconf/ajaxop?"+queryParams.Encode(), nil)
+	return http.NewRequest("GET", mangosteam.BaseSteamWebURL+"/mobileconf/ajaxop?"+queryParams.Encode(), nil)
 }
 
 func generateConfirmationQueryParams(
-	baseSteamAPIURL string,
 	steamID mangosteam.SteamID,
 	sga *auth.SteamGuardAccount,
 	tag string,
@@ -234,7 +211,7 @@ func generateConfirmationQueryParams(
 	if sga.DeviceID == "" {
 		return nil, errors.New("Device ID is empty")
 	}
-	t := auth.GetSteamTime(baseSteamAPIURL)
+	t := auth.GetSteamTime()
 	queryParams := url.Values{}
 	queryParams.Set("p", sga.DeviceID)
 	queryParams.Set("a", steamID.String())
