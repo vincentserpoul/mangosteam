@@ -25,7 +25,7 @@ type doLogInResponse struct {
 
 // OAuth is what will be used in future requests to specify we are logged in
 type OAuth struct {
-	SteamID       mangosteam.SteamID `json:"steamid,string"`
+	SteamID       mangosteam.SteamID `db:"osteam_id" json:"steamid,string"`
 	OAuthToken    string             `json:"auth"`
 	Token         string             `json:"token"`
 	TokenSecure   string             `json:"token_secure"`
