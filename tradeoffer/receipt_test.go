@@ -92,7 +92,7 @@ func TestStatus500GetItemsFromReceipt(t *testing.T) {
 
 	_, err := GetItemsFromReceipt(&client, uint64(123))
 	if err == nil {
-		t.Errorf("GetItemsFromReceipt() should return an error if the server doesnt reply")
+		t.Errorf("GetItemsFromReceipt() should return an error if the server doesn't reply")
 	}
 }
 
@@ -110,7 +110,7 @@ func TestTimeOutGetItemsFromReceipt(t *testing.T) {
 
 	_, err := GetItemsFromReceipt(&client, uint64(123))
 	if err == nil {
-		t.Errorf("GetItemsFromReceipt() should return an error if the server doesnt reply")
+		t.Errorf("GetItemsFromReceipt() should return an error if the server doesn't reply")
 	}
 }
 

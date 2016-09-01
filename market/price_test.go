@@ -46,7 +46,7 @@ func TestGetPrice(t *testing.T) {
 		gotPrice, err := GetPrice(mangosteam.AppID(730), "test")
 		if c.ExpectedErr != nil {
 			if err == nil {
-				t.Errorf("GetPrice(%v) expected an error, didnt get any", c)
+				t.Errorf("GetPrice(%v) expected an error, didn't get any", c)
 			}
 			continue
 		}
@@ -92,7 +92,7 @@ loopcases:
 		gotPriceOverview, err := getPriceOverview(mangosteam.AppID(730), "test")
 		if c.ExpectedErr != nil {
 			if err == nil {
-				t.Errorf("GetPriceOverview(%v) expected an error, didnt get any", c)
+				t.Errorf("GetPriceOverview(%v) expected an error, didn't get any", c)
 			}
 			continue loopcases
 		}
@@ -116,7 +116,7 @@ func TestTimeoutGetPriceOverview(t *testing.T) {
 
 	_, err := getPriceOverview(mangosteam.AppID(730), "test")
 	if err == nil {
-		t.Errorf("GetPriceOverview() expected an error, didnt get any")
+		t.Errorf("GetPriceOverview() expected an error, didn't get any")
 	}
 }
 
