@@ -28,8 +28,8 @@ func TestSteamTradeOfferIDString(t *testing.T) {
 func TestEmptyCreateSteamTradeOffer(t *testing.T) {
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -59,8 +59,8 @@ func TestOKCreateSteamTradeOffer(t *testing.T) {
 
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +73,7 @@ func TestOKCreateSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 
 	mangosteam.BaseSteamWebURL = ts.URL
 	_, err := CreateSteamTradeOffer(
@@ -92,8 +92,8 @@ func TestOKCreateSteamTradeOffer(t *testing.T) {
 func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -106,7 +106,7 @@ func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 
 	mangosteam.BaseSteamWebURL = ts.URL
 	_, err := CreateSteamTradeOffer(
@@ -125,8 +125,8 @@ func TestNotFoundCreateSteamTradeOffer(t *testing.T) {
 func TestTimeOutCreateSteamTradeOffer(t *testing.T) {
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +140,7 @@ func TestTimeOutCreateSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 
 	mangosteam.BaseSteamWebURL = ts.URL
 	_, err := CreateSteamTradeOffer(
@@ -160,8 +160,8 @@ func TestBodyErrorCreateSteamTradeOffer(t *testing.T) {
 
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -173,7 +173,7 @@ func TestBodyErrorCreateSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 
 	mangosteam.BaseSteamWebURL = ts.URL
 	_, err := CreateSteamTradeOffer(
@@ -193,8 +193,8 @@ func TestMissingSessionIDCreateSteamTradeOffer(t *testing.T) {
 
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -226,8 +226,8 @@ func TestGetCreateSteamTradeOfferRequest(t *testing.T) {
 	sessionID := "1234abcde"
 	otherSteamID := mangosteam.SteamID(1234567890)
 	accessToken := `Er_owt`
-	myItems := []*Asset{&Asset{AssetID: 124}, &Asset{AssetID: 125}, &Asset{AssetID: 126}}
-	theirItems := []*Asset{&Asset{AssetID: 221}, &Asset{AssetID: 222}, &Asset{AssetID: 223}}
+	myItems := []*Asset{{AssetID: 124}, {AssetID: 125}, {AssetID: 126}}
+	theirItems := []*Asset{{AssetID: 221}, {AssetID: 222}, {AssetID: 223}}
 	message := `Mock me over and over!`
 
 	expectedReqURL := `http://mockymocky.com/tradeoffer/new/send`
@@ -301,7 +301,7 @@ func TestExtractSessionIDFromClient(t *testing.T) {
 	}
 
 	baseURLu, _ := url.Parse(baseURL)
-	client.Jar.SetCookies(baseURLu, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234"}})
+	client.Jar.SetCookies(baseURLu, []*http.Cookie{{Name: "sessionid", Value: "1234"}})
 	sessionid, err := extractSessionIDFromClient(baseURL, client)
 	if err != nil {
 		t.Errorf("ExtractSessionIDFromClient expected `1234` but got an error %v instead", err)

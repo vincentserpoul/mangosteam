@@ -27,7 +27,7 @@ func TestOKCancelSteamTradeOfferRequest(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -83,7 +83,7 @@ func TestTimeOutCancelSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -111,7 +111,7 @@ func TestNotFoundSteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -139,7 +139,7 @@ func TestNoBodySteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -168,7 +168,7 @@ func TestWeird500Success11SteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -197,7 +197,7 @@ func TestWeird500Success16SteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(
@@ -226,7 +226,7 @@ func TestWeird500SteamTradeOffer(t *testing.T) {
 	client := http.Client{}
 	client.Jar, _ = cookiejar.New(nil)
 	baseURL, _ := url.Parse(ts.URL)
-	client.Jar.SetCookies(baseURL, []*http.Cookie{&http.Cookie{Name: "sessionid", Value: "1234abcde"}})
+	client.Jar.SetCookies(baseURL, []*http.Cookie{{Name: "sessionid", Value: "1234abcde"}})
 	mangosteam.BaseSteamWebURL = ts.URL
 
 	err := CancelSteamTradeOffer(

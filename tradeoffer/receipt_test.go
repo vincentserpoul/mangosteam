@@ -26,28 +26,28 @@ func TestGetItemsFromReceipt(t *testing.T) {
 	receiptItems, _ := GetItemsFromReceipt(&client, uint64(123))
 
 	expectedItems := []ReceiptItem{
-		ReceiptItem{
+		{
 			ItemID:         inventory.ItemID(1234),
 			OwnerSteamID:   mangosteam.SteamID(12345678999),
 			ClassID:        inventory.ClassID(1234567),
 			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "MOllusk 12 | 345",
 		},
-		ReceiptItem{
+		{
 			ItemID:         inventory.ItemID(1235),
 			OwnerSteamID:   mangosteam.SteamID(12345678999),
 			ClassID:        inventory.ClassID(1234568),
 			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "AKlove 12 | 3",
 		},
-		ReceiptItem{
+		{
 			ItemID:         inventory.ItemID(1236),
 			OwnerSteamID:   mangosteam.SteamID(12345678999),
 			ClassID:        inventory.ClassID(1234569),
 			InstanceID:     inventory.InstanceID(0),
 			MarketHashName: "TG43 | Elpiero",
 		},
-		ReceiptItem{
+		{
 			ItemID:         inventory.ItemID(1237),
 			OwnerSteamID:   mangosteam.SteamID(12345678999),
 			ClassID:        inventory.ClassID(12345670),
